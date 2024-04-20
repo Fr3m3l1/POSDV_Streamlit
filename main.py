@@ -15,6 +15,8 @@ def main():
     X = cardiotocography.data.features 
     y = cardiotocography.data.targets 
 
+    print(cardiotocography.description)
+
     print(X)
     print(y)
 
@@ -25,8 +27,8 @@ def main():
 
     print(cardiotocography.variables)
     # for each row in the variable 
-    for row_nr, variable_type in enumerate(cardiotocography.variables['type']):
-        if variable_type == 'Continuous':
+    for row_nr, variable_type in enumerate(cardiotocography.variables['role']):
+        if variable_type == 'Feature':
             numerical_variables.append(cardiotocography.variables['name'][row_nr])
         else:
             categorical_variables.append(cardiotocography.variables['name'][row_nr])
@@ -56,7 +58,7 @@ def main():
     categorical_variable = st.selectbox('Select a categorical variable:', categorical_variables)
     # frequency distribution as bar chart
     fig, ax = plt.subplots()
-    X[categorical_variable].value_counts().plot(kind='bar', ax=ax)
+    y[categorical_variable].value_counts().plot(kind='bar', ax=ax)
     ax.set_xlabel(categorical_variable)
     ax.set_ylabel('Count')
     ax.set_title(f'Frequency distribution of {categorical_variable}')
@@ -64,7 +66,7 @@ def main():
 
     # pie chart
     fig, ax = plt.subplots()
-    X[categorical_variable].value_counts().plot(kind='pie', ax=ax)
+    y[categorical_variable].value_counts().plot(kind='pie', ax=ax)
     ax.set_ylabel('Count')
     ax.set_title(f'Pie chart of {categorical_variable}')
     st.pyplot(fig)
@@ -73,6 +75,9 @@ def main():
     # select a numerical variable
     numerical_variable = st.selectbox('Select a numerical variable:', numerical_variables)
 
+    # combine the X and y dataframes
+    X = X.join(y)
+    
     # grouped box plot
     fig, ax = plt.subplots()
     X.boxplot(column=numerical_variable, by=categorical_variable, ax=ax)
