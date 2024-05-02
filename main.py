@@ -3,6 +3,7 @@ import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 from ucimlrepo import fetch_ucirepo 
+import plotly.express as px
 
 
 def main():
@@ -63,6 +64,11 @@ def main():
     ax.set_ylabel('Count')
     ax.set_title(f'Frequency distribution of {categorical_variable}')
     st.pyplot(fig)
+
+    # for interactive plot create a plotly figure object
+    plt_fig = px.bar(y[categorical_variable].value_counts(), x=y[categorical_variable].value_counts().index, y=y[categorical_variable].value_counts().values)
+    # display the plotly figure object
+    st.plotly_chart(plt_fig, use_container_width=True)
 
     # pie chart
     fig, ax = plt.subplots()
