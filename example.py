@@ -4,6 +4,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from ucimlrepo import fetch_ucirepo 
 import plotly.express as px
+from sklearn.decomposition import PCA
 
 
 def main():
@@ -93,6 +94,49 @@ def main():
     st.pyplot(fig)
 
     
+   
+    
+    # Perform PCA
+
+
+    # Annahme: cardiotocography.data.features ist deine Datenquelle
+    X = cardiotocography.data.features 
+
+    # PCA mit Anzahl der Komponenten entsprechend der Anzahl der Merkmale
+    pca = PCA(n_components=len(X.columns))
+    X_pca = pca.fit_transform(X)
+
+    # Bar-Plot der erklärten Varianz für jede Komponente
+    fig, ax = plt.subplots()
+    bars = ax.barh(range(len(pca.explained_variance_ratio_)), pca.explained_variance_ratio_, color='green')
+    ax.set_ylabel('Feature')
+    ax.set_xlabel('Explained variance')
+    ax.set_title('PCA - Explained Variance per Feature')
+
+    # Setze Merkmalsnamen als y-Achsenbeschriftungen
+    feature_names = X.columns
+    ax.set_yticks(range(len(pca.explained_variance_ratio_)))
+    ax.set_yticklabels(feature_names)
+
+    # Füge Beschriftungen zu den Balken hinzu
+    for bar in bars:
+        width = bar.get_width()
+        label_x_pos = width + 0.02  # Passe diesen Wert für die richtige Positionierung der Beschriftungen an
+        ax.text(label_x_pos, bar.get_y() + bar.get_height()/2, f'{width:.0%}',  # Runde auf ganze Zahl und zeige als Prozent
+                va='center', ha='left')
+        
+    for loc in ['top', 'right']:
+        ax.spines[loc].set_visible(False)
+
+    plt.show()
+
+
+    st.pyplot(fig)
+
+
+    
+
+
 
 
 
