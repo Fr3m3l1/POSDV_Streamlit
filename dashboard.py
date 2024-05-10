@@ -72,6 +72,7 @@ def main(featured_df, target_df):
     fig = px.histogram(featured_df.join(target_df), x=categorical_variable_selection, color='NSP_Label', title=f'Frequency distribution of {categorical_variable_selection} grouped by NSP')
     st.plotly_chart(fig, use_container_width=True)
 
+    # this is an alternative plot
     fig = go.Figure()
     for nsp in target_df['NSP_Label'].unique():
         fig.add_trace(go.Histogram(x=featured_df[target_df['NSP_Label'] == nsp][categorical_variable_selection], name=nsp))
