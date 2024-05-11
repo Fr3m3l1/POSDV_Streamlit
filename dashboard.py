@@ -5,6 +5,7 @@ import matplotlib.pyplot as plt
 from ucimlrepo import fetch_ucirepo 
 import plotly.express as px
 import plotly.graph_objects as go
+from sklearn.decomposition import PCA
 
 def main(featured_df, target_df):
     st.title('Cardiotocography Dashboard')
@@ -58,9 +59,46 @@ def main(featured_df, target_df):
     if st.button('Reset selection', key='reset_selection', help='Click to reset the selection'):
         categorical_variable_selection = st.selectbox('Select a categorical variable:', categorical_variables, index=0)
         return
+    
+    # PCA
+    # show explenation text for PCA
+    st.markdown('### PCA - Explained Variance per Feature:')
+    st.markdown('Principal Component Analysis (PCA) is a dimensionality reduction technique that is often used to reduce the number of features in a dataset. The plot below shows the explained variance for each feature in the dataset. The higher the explained variance, the more important the feature is for the dataset.')
+    
+    # Annahme: cardiotocography.data.features ist deine Datenquelle
+    X = featured_df 
+
+    # PCA mit Anzahl der Komponenten entsprechend der Anzahl der Merkmale
+    pca = PCA(n_components=len(X.columns))
+    X_pca = pca.fit_transform(X)
+
+    # Bar-Plot der erklärten Varianz für jede Komponente
+    fig, ax = plt.subplots()
+    bars = ax.barh(range(len(pca.explained_variance_ratio_)), pca.explained_variance_ratio_, color='green')
+    ax.set_ylabel('Feature')
+    ax.set_xlabel('Explained variance')
+    ax.set_title('PCA - Explained Variance per Feature')
+
+    # Setze Merkmalsnamen als y-Achsenbeschriftungen
+    feature_names = X.columns
+    ax.set_yticks(range(len(pca.explained_variance_ratio_)))
+    ax.set_yticklabels(feature_names)
+
+    # Füge Beschriftungen zu den Balken hinzu
+    for bar in bars:
+        width = bar.get_width()
+        label_x_pos = width + 0.02  # Passe diesen Wert für die richtige Positionierung der Beschriftungen an
+        ax.text(label_x_pos, bar.get_y() + bar.get_height()/2, f'{width:.0%}',  # Runde auf ganze Zahl und zeige als Prozent
+                va='center', ha='left')
+        
+    for loc in ['top', 'right']:
+        ax.spines[loc].set_visible(False)
+
+    st.pyplot(fig)
+
 
     # select a categorical variable
-    categorical_variable_selection = st.selectbox('Select a categorical variable:', categorical_variables, placeholder='Select a categorical variable', index=0)
+    categorical_variable_selection = st.selectbox('Select a categorical variable for exploration:', categorical_variables, placeholder='Select a categorical variable', index=0)
 
     # Check if the user has selected a variable
     if categorical_variable_selection == '':
