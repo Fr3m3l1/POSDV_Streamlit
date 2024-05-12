@@ -6,6 +6,7 @@ from ucimlrepo import fetch_ucirepo
 import plotly.express as px
 import plotly.graph_objects as go
 from sklearn.decomposition import PCA
+import seaborn as sns
 
 def main(featured_df, target_df):
     st.title('Cardiotocography Dashboard')
@@ -117,9 +118,24 @@ def main(featured_df, target_df):
     fig.update_layout(title=f'Frequency distribution of {categorical_variable_selection} grouped by NSP', barmode='overlay')
     st.plotly_chart(fig, use_container_width=True)
 
+    #### Heatmap
+    ## Dropdown for correlation heatmap
+    show_correlation = st.selectbox('Are you intereseted to learn more about correlation in measurements?', ( 'May be later', 'Yes' ))
 
+    if show_correlation == 'Yes':
+        # Section: Correlation Heatmap
+        st.subheader('Correlation Heatmap of Features')
+        fig, ax = plt.subplots(figsize=(10, 8))
+        sns.heatmap(X.corr(), annot=True, cmap='coolwarm', fmt=".2f")
+        st.pyplot(fig)
 
-
+        st.markdown("""
+**💡 How to use this correlation matrix?**  
+This correlation matrix displays the relationships between various measurements in a patient's CTG data. 
+Darker shades signify stronger correlations, while lighter shades indicate weaker or no correlations. 
+Look for strong positive or negative correlations, as they may indicate redundant or significant information. 
+1 means positive correlation, -1 represents negative correlation.
+    """)
 
 
 def loaddata():

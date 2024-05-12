@@ -53,13 +53,17 @@ def main():
     #col1, col2 = st.columns(2)
     X['NSP'] = y['NSP'] 
     
-    # Section: Correlation Heatmap
-    st.subheader('Correlation Heatmap of Features')
-    fig, ax = plt.subplots(figsize=(10, 8))
-    sns.heatmap(X.corr(), annot=True, cmap='coolwarm', fmt=".2f")
-    st.pyplot(fig)
+    ## Dropdown for correlation heatmap
+    show_correlation = st.selectbox('Are you intereseted to learn more about correlation in measurements?', ( 'May be later', 'Yes' ))
 
-    st.markdown("""
+    if show_correlation == 'Yes':
+        # Section: Correlation Heatmap
+        st.subheader('Correlation Heatmap of Features')
+        fig, ax = plt.subplots(figsize=(10, 8))
+        sns.heatmap(X.corr(), annot=True, cmap='coolwarm', fmt=".2f")
+        st.pyplot(fig)
+
+        st.markdown("""
 **💡 How to use this correlation matrix?**  
 This correlation matrix displays the relationships between various measurements in a patient's CTG data. 
 Darker shades signify stronger correlations, while lighter shades indicate weaker or no correlations. 
@@ -84,21 +88,6 @@ Areas where the density curves differ notably, especially for pathologic conditi
             sns.kdeplot(data=X, x=feature, hue='NSP', fill=True)
             ax.set_title(feature)
             st.pyplot(fig)
-
-    # Section: Feature Importance Using Random Forest
-    st.subheader('Random Forest Feature Importance')
-    X_train, X_test, y_train, y_test = train_test_split(X[numerical_variables], y['NSP'], test_size=0.3, random_state=42)
-    model = RandomForestClassifier(n_estimators=100, random_state=42)
-    model.fit(X_train, y_train)
-    importances = model.feature_importances_
-
-    fig, ax = plt.subplots()
-    indices = np.argsort(importances)[::-1]
-    plt.title('Feature Importances')
-    plt.bar(range(X_train.shape[1]), importances[indices], color="r", align="center")
-    plt.xticks(range(X_train.shape[1]), X_train.columns[indices], rotation=90)
-    plt.xlim([-1, X_train.shape[1]])
-    st.pyplot(fig)
 
 if __name__ == '__main__':
     main()
