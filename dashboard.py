@@ -61,40 +61,38 @@ def main(featured_df, target_df):
         categorical_variable_selection = st.selectbox('Select a categorical variable:', categorical_variables, index=0)
         return
     
-    # PCA
-    # show explenation text for PCA
-    st.markdown('### PCA - Explained Variance per Feature:')
-    st.markdown('Principal Component Analysis (PCA) is a dimensionality reduction technique that is often used to reduce the number of features in a dataset. The plot below shows the explained variance for each feature in the dataset. The higher the explained variance, the more important the feature is for the dataset.')
-    
-    # Annahme: cardiotocography.data.features ist deine Datenquelle
-    X = featured_df 
+    # Introduction and explanation of PCA
+    st.markdown('### PCA - Explained Variance per Measurement:')
+    st.markdown('Principal Component Analysis (PCA) is a mathematical reduction technique that allows to eluminate the most important measurments in the big datasets . The graph below shows the explained variance for each measurment of a patient. The higher the explained variance, the more important that measurment could be for further treatment.')
 
-    # PCA mit Anzahl der Komponenten entsprechend der Anzahl der Merkmale
+    # Perform PCA
+    X = featured_df
     pca = PCA(n_components=len(X.columns))
     X_pca = pca.fit_transform(X)
 
-    # Bar-Plot der erklärten Varianz für jede Komponente
+    # Sorting the explained variance ratios and corresponding feature names
+    explained_variances = pca.explained_variance_ratio_
+    features = X.columns
+    indices = np.argsort(explained_variances)[::-1]  # Get the indices that would sort the array
+    sorted_variances = explained_variances[indices]
+    sorted_features = features[indices]
+
+    # Create bar plot for the sorted explained variances
     fig, ax = plt.subplots()
-    bars = ax.barh(range(len(pca.explained_variance_ratio_)), pca.explained_variance_ratio_, color='green')
-    ax.set_ylabel('Feature')
-    ax.set_xlabel('Explained variance')
+    bars = ax.barh(sorted_features, sorted_variances, color='green')
+    ax.set_xlabel('Explained Variance')
     ax.set_title('PCA - Explained Variance per Feature')
 
-    # Setze Merkmalsnamen als y-Achsenbeschriftungen
-    feature_names = X.columns
-    ax.set_yticks(range(len(pca.explained_variance_ratio_)))
-    ax.set_yticklabels(feature_names)
-
-    # Füge Beschriftungen zu den Balken hinzu
+    # Add text labels to the bars
     for bar in bars:
         width = bar.get_width()
-        label_x_pos = width + 0.02  # Passe diesen Wert für die richtige Positionierung der Beschriftungen an
-        ax.text(label_x_pos, bar.get_y() + bar.get_height()/2, f'{width:.0%}',  # Runde auf ganze Zahl und zeige als Prozent
-                va='center', ha='left')
-        
-    for loc in ['top', 'right']:
-        ax.spines[loc].set_visible(False)
+        label_x_pos = width + 0.02  # adjust this value for label positioning
+        ax.text(label_x_pos, bar.get_y() + bar.get_height() / 2, f'{width:.2f}', va='center')
 
+    # Inverting y-axis to show the largest bar on top
+    ax.invert_yaxis()
+
+    # Display the plot
     st.pyplot(fig)
 
 
@@ -124,7 +122,7 @@ def main(featured_df, target_df):
 
     if show_correlation == 'Yes':
         # Section: Correlation Heatmap
-        st.subheader('Correlation Heatmap of Features')
+        st.subheader('Correlation Heatmap of all measurements')
         fig, ax = plt.subplots(figsize=(10, 8))
         sns.heatmap(X.corr(), annot=True, cmap='coolwarm', fmt=".2f")
         st.pyplot(fig)
@@ -133,7 +131,7 @@ def main(featured_df, target_df):
 **💡 How to use this correlation matrix?**  
 This correlation matrix displays the relationships between various measurements in a patient's CTG data. 
 Darker shades signify stronger correlations, while lighter shades indicate weaker or no correlations. 
-Look for strong positive or negative correlations, as they may indicate redundant or significant information. 
+Look for strong positive or negative correlations, as they may indicate significant information. 
 1 means positive correlation, -1 represents negative correlation.
     """)
 
