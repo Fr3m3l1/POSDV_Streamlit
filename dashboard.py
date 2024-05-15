@@ -10,19 +10,6 @@ import seaborn as sns
 
 def main(featured_df, target_df):
 
-    st.set_page_config(initial_sidebar_state="collapsed")
-
-    st.markdown(
-        """
-    <style>
-        [data-testid="collapsedControl"] {
-            display: none
-        }
-    </style>
-    """,
-        unsafe_allow_html=True,
-    )
-
     st.title('Cardiotocography Dashboard')
 
     # show intro text
@@ -150,7 +137,7 @@ Look for strong positive or negative correlations, as they may indicate signific
     """)
 
     if categorical_variable_selection != "":
-        url = "http://localhost:8501?path=tryout"
+        url = "http://localhost:8501/tryout"
         # show button which links to the new page
         st.link_button("Explore More", url)
 
@@ -169,7 +156,20 @@ def loaddata():
     
     return featured_df, target_df
 
-if __name__ == '__main__':
+if __name__ == '__main__':    
+    st.set_page_config(initial_sidebar_state="collapsed")
+
+    st.markdown(
+        """
+    <style>
+        [data-testid="collapsedControl"] {
+            display: none
+        }
+    </style>
+    """,
+        unsafe_allow_html=True,
+    )
+
     featured_df, target_df = loaddata()
 
     main(featured_df, target_df)
