@@ -1,5 +1,4 @@
 import streamlit as st
-import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 from ucimlrepo import fetch_ucirepo 
@@ -8,7 +7,22 @@ import plotly.graph_objects as go
 from sklearn.decomposition import PCA
 import seaborn as sns
 
+
 def main(featured_df, target_df):
+
+    st.set_page_config(initial_sidebar_state="collapsed")
+
+    st.markdown(
+        """
+    <style>
+        [data-testid="collapsedControl"] {
+            display: none
+        }
+    </style>
+    """,
+        unsafe_allow_html=True,
+    )
+
     st.title('Cardiotocography Dashboard')
 
     # show intro text
@@ -135,6 +149,12 @@ Look for strong positive or negative correlations, as they may indicate signific
 1 means positive correlation, -1 represents negative correlation.
     """)
 
+    if categorical_variable_selection != "":
+        url = "http://localhost:8501?path=tryout"
+        # show button which links to the new page
+        st.link_button("Explore More", url)
+
+
 
 def loaddata():
     # fetch dataset 
@@ -151,4 +171,8 @@ def loaddata():
 
 if __name__ == '__main__':
     featured_df, target_df = loaddata()
+
     main(featured_df, target_df)
+
+
+    
