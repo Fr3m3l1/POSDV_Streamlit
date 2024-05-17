@@ -1,4 +1,5 @@
 import streamlit as st
+import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 from ucimlrepo import fetch_ucirepo 
@@ -7,12 +8,25 @@ import plotly.graph_objects as go
 from sklearn.decomposition import PCA
 import seaborn as sns
 
+# Set the page configuration
+st.set_page_config(initial_sidebar_state="collapsed")
+
+# Hide sidebar and its pages
+st.markdown(
+    """
+    <style>
+        [data-testid="stSidebar"] {
+            display: none;
+        }
+    </style>
+    """,
+    unsafe_allow_html=True,
+)
 
 def main(featured_df, target_df):
-
     st.title('Cardiotocography Dashboard')
 
-    # show intro text
+    # Show intro text
     st.markdown('This dashboard provides an overview of a Cardiotocography dataset. The dataset contains features of fetal heart rate (FHR) and uterine contractions (UC) and the target variable Normal, Suspect, Pathologic (NSP). Feel free to explore the dataset by selecting a categorical variable from the dropdown menu below.')
 
     st.markdown('### Cardiotocography dataset overview:')
@@ -20,7 +34,7 @@ def main(featured_df, target_df):
     # Number of samples
     # Number of missing values
 
-    # display overview on one row
+    # Display overview on one row
     col1, col2, col3 = st.columns(3)
     with col1:
         st.write(f'Number of features: {featured_df.shape[1]}')
@@ -29,10 +43,10 @@ def main(featured_df, target_df):
     with col3:
         st.write(f'Number of missing values: {featured_df.isnull().sum().sum()}')
 
-    # Make devider line
+    # Make divider line
     st.write('---')
 
-    # Create a array for the categorical variables with description
+    # Create an array for the categorical variables with description
     categorical_variables = ["",
                             'LB: FHR baseline (beats per minute)',
                              'AC: # of accelerations per second',
@@ -56,15 +70,13 @@ def main(featured_df, target_df):
                              'Variance: histogram variance',
                              'Tendency: histogram tendency']
     
-    
-    # Red Reset button 
+    # Reset button
     if st.button('Reset selection', key='reset_selection', help='Click to reset the selection'):
-        categorical_variable_selection = st.selectbox('Select a categorical variable:', categorical_variables, index=0)
-        return
+        st.experimental_rerun()
     
     # Introduction and explanation of PCA
     st.markdown('### PCA - Explained Variance per Measurement:')
-    st.markdown('Principal Component Analysis (PCA) is a mathematical reduction technique that allows to eluminate the most important measurments in the big datasets . The graph below shows the explained variance for each measurment of a patient. The higher the explained variance, the more important that measurment could be for further treatment.')
+    st.markdown('Principal Component Analysis (PCA) is a mathematical reduction technique that allows to illuminate the most important measurements in the big datasets. The graph below shows the explained variance for each measurement of a patient. The higher the explained variance, the more important that measurement could be for further treatment.')
 
     # Perform PCA
     X = featured_df
@@ -96,8 +108,20 @@ def main(featured_df, target_df):
     # Display the plot
     st.pyplot(fig)
 
+    # Density plots for all features
+    st.markdown('### Overview of all measurments dirstribution:')
+    n_cols = 2
+    cols = st.columns(n_cols)
+    for i, column in enumerate(featured_df.columns):
+        description = next((desc for desc in categorical_variables if desc.startswith(column)), column)
+        with cols[i % n_cols]:
+            fig, ax = plt.subplots()
+            sns.kdeplot(data=featured_df, x=column, hue=target_df['NSP_Label'], fill=True,
+                        palette={'Normal': 'green', 'Suspect': 'blue', 'Pathologic': 'red'})
+            ax.set_title(f'Distribution of {description}')
+            st.pyplot(fig)
 
-    # select a categorical variable
+    # Select a categorical variable
     categorical_variable_selection = st.selectbox('Select a categorical variable for exploration:', categorical_variables, placeholder='Select a categorical variable', index=0)
 
     # Check if the user has selected a variable
@@ -110,7 +134,7 @@ def main(featured_df, target_df):
     fig = px.histogram(featured_df.join(target_df), x=categorical_variable_selection, color='NSP_Label', title=f'Frequency distribution of {categorical_variable_selection} grouped by NSP')
     st.plotly_chart(fig, use_container_width=True)
 
-    # this is an alternative plot
+    # This is an alternative plot
     fig = go.Figure()
     for nsp in target_df['NSP_Label'].unique():
         fig.add_trace(go.Histogram(x=featured_df[target_df['NSP_Label'] == nsp][categorical_variable_selection], name=nsp))
@@ -119,7 +143,7 @@ def main(featured_df, target_df):
 
     #### Heatmap
     ## Dropdown for correlation heatmap
-    show_correlation = st.selectbox('Are you intereseted to learn more about correlation in measurements?', ( 'May be later', 'Yes' ))
+    show_correlation = st.selectbox('Are you interested to learn more about correlation in measurements?', ('Maybe later', 'Yes'))
 
     if show_correlation == 'Yes':
         # Section: Correlation Heatmap
@@ -136,43 +160,19 @@ Look for strong positive or negative correlations, as they may indicate signific
 1 means positive correlation, -1 represents negative correlation.
     """)
 
-    if categorical_variable_selection != "":
-        url = "http://localhost:8501/tryout"
-        # show button which links to the new page
-        st.link_button("Explore More", url)
-
-
-
 def loaddata():
-    # fetch dataset 
+    # Fetch dataset 
     cardiotocography = fetch_ucirepo(id=193) 
     
-    # data (as pandas dataframes) 
+    # Data (as pandas dataframes) 
     featured_df = cardiotocography.data.features 
     target_df = cardiotocography.data.targets
 
-    # convert NSP to categorical
+    # Convert NSP to categorical
     target_df['NSP_Label'] = target_df['NSP'].map({1: 'Normal', 2: 'Suspect', 3: 'Pathologic'})
     
     return featured_df, target_df
 
-if __name__ == '__main__':    
-    st.set_page_config(initial_sidebar_state="collapsed")
-
-    st.markdown(
-        """
-    <style>
-        [data-testid="collapsedControl"] {
-            display: none
-        }
-    </style>
-    """,
-        unsafe_allow_html=True,
-    )
-
+if __name__ == '__main__':
     featured_df, target_df = loaddata()
-
     main(featured_df, target_df)
-
-
-    
