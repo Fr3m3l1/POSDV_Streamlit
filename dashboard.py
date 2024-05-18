@@ -134,13 +134,6 @@ def main(featured_df, target_df):
     fig = px.histogram(featured_df.join(target_df), x=categorical_variable_selection, color='NSP_Label', title=f'Frequency distribution of {categorical_variable_selection} grouped by NSP')
     st.plotly_chart(fig, use_container_width=True)
 
-    # This is an alternative plot
-    fig = go.Figure()
-    for nsp in target_df['NSP_Label'].unique():
-        fig.add_trace(go.Histogram(x=featured_df[target_df['NSP_Label'] == nsp][categorical_variable_selection], name=nsp))
-    fig.update_layout(title=f'Frequency distribution of {categorical_variable_selection} grouped by NSP', barmode='overlay')
-    st.plotly_chart(fig, use_container_width=True)
-
     #### Heatmap
     ## Dropdown for correlation heatmap
     show_correlation = st.selectbox('Are you interested to learn more about correlation in measurements?', ('Maybe later', 'Yes'))
@@ -159,18 +152,31 @@ Darker shades signify stronger correlations, while lighter shades indicate weake
 Look for strong positive or negative correlations, as they may indicate significant information. 
 1 means positive correlation, -1 represents negative correlation.
     """)
+        
+    # show button to localhost:8501/tryout
+    st.link_button('Try your own data', 'http://localhost:8501/tryout')
 
 def loaddata():
-    # Fetch dataset 
-    cardiotocography = fetch_ucirepo(id=193) 
-    
-    # Data (as pandas dataframes) 
-    featured_df = cardiotocography.data.features 
-    target_df = cardiotocography.data.targets
+    # Fetch dataset
+    try:
+        cardiotocography = fetch_ucirepo(id=193) 
 
+        # Save data to csv for later use in case the API is down
+        cardiotocography.data.features.to_csv('data/featured_df.csv', index=False)
+        cardiotocography.data.targets.to_csv('data/target_df.csv', index=False)
+        
+        # Data (as pandas dataframes) 
+        featured_df = cardiotocography.data.features 
+        target_df = cardiotocography.data.targets
+
+    except:
+        # Load data from csv
+        featured_df = pd.read_csv('data/featured_df.csv')
+        target_df = pd.read_csv('data/target_df.csv')
+        
     # Convert NSP to categorical
     target_df['NSP_Label'] = target_df['NSP'].map({1: 'Normal', 2: 'Suspect', 3: 'Pathologic'})
-    
+        
     return featured_df, target_df
 
 if __name__ == '__main__':
