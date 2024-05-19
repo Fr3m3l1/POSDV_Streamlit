@@ -75,8 +75,24 @@ def main(featured_df, target_df):
                 # create a histogram for each feature
                 # show the input value as a vertical line
                 # show the histogram of the feature
-                fig = px.histogram(featured_df.join(target_df), x=featured_df[key], color='NSP_Label', title=f'Frequency distribution of {key} grouped by NSP')
+                # use the following colors for the NSP labels: Normal: blue, Suspect: orange, Pathologic: red
+                fig = px.histogram(featured_df.join(target_df), x=featured_df[key], color='NSP_Label', title=f'{key} histogram', labels={'NSP_Label': 'NSP Label', 'count': 'Count', 'x': key}, color_discrete_map={'Normal': 'green', 'Suspect': 'blue', 'Pathologic': 'red'})
                 fig.add_vline(x=user_input[key], line_dash="dash", line_color="red", annotation_text=f'Your input: {user_input[key]}')
+                fig.update_layout(barmode='overlay')
+                fig.update_traces(opacity=0.5)
+                fig.update_xaxes(categoryorder='total descending')
+                st.plotly_chart(fig, use_container_width=True)
+
+                # create 3 plot for each Label (Normal, Suspect, Pathologic)
+                # show the input value as a vertical line
+                # create 3 columns for the 3 plots
+                # show the histogram of the feature for each label
+                # use the following colors for the NSP labels: Normal: blue, Suspect: orange, Pathologic: red
+                fig = px.histogram(featured_df.join(target_df), x=featured_df[key], color='NSP_Label', title=f'{key} histogram', labels={'NSP_Label': 'NSP Label', 'count': 'Count', 'x': key}, color_discrete_map={'Normal': 'green', 'Suspect': 'blue', 'Pathologic': 'red'}, facet_row='NSP_Label', facet_row_spacing=0.05)
+                fig.add_vline(x=user_input[key], line_dash="dash", line_color="red", annotation_text=f'Your input: {user_input[key]}')
+                fig.update_layout(barmode='overlay')
+                fig.update_traces(opacity=1)
+                fig.update_xaxes(categoryorder='total descending')
                 st.plotly_chart(fig, use_container_width=True)
 
 

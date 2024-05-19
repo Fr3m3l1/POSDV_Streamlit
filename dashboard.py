@@ -69,11 +69,7 @@ def main(featured_df, target_df):
                              'Median: histogram median',
                              'Variance: histogram variance',
                              'Tendency: histogram tendency']
-    
-    # Reset button
-    if st.button('Reset selection', key='reset_selection', help='Click to reset the selection'):
-        st.experimental_rerun()
-    
+        
     # Introduction and explanation of PCA
     st.markdown('### PCA - Explained Variance per Measurement:')
     st.markdown('Principal Component Analysis (PCA) is a mathematical reduction technique that allows to illuminate the most important measurements in the big datasets. The graph below shows the explained variance for each measurement of a patient. The higher the explained variance, the more important that measurement could be for further treatment.')
@@ -95,7 +91,11 @@ def main(featured_df, target_df):
     bars = ax.barh(sorted_features, sorted_variances, color='green')
     ax.set_xlabel('Explained Variance')
     ax.set_title('PCA - Explained Variance per Feature')
-
+    ax.spines['top'].set_visible(False)
+    ax.spines['right'].set_visible(False)
+    ax.spines['bottom'].set_visible(False)
+    ax.spines['left'].set_visible(False)
+    
     # Add text labels to the bars
     for bar in bars:
         width = bar.get_width()
@@ -108,31 +108,42 @@ def main(featured_df, target_df):
     # Display the plot
     st.pyplot(fig)
 
-    # Density plots for all features
+    # Make divider line
+    st.write('---')
     st.markdown('### Overview of all measurments dirstribution:')
-    n_cols = 2
-    cols = st.columns(n_cols)
-    for i, column in enumerate(featured_df.columns):
-        description = next((desc for desc in categorical_variables if desc.startswith(column)), column)
-        with cols[i % n_cols]:
-            fig, ax = plt.subplots()
-            sns.kdeplot(data=featured_df, x=column, hue=target_df['NSP_Label'], fill=True,
-                        palette={'Normal': 'green', 'Suspect': 'blue', 'Pathologic': 'red'})
-            ax.set_title(f'Distribution of {description}')
-            st.pyplot(fig)
 
-    # Select a categorical variable
-    #categorical_variable_selection = st.selectbox('Select a categorical variable for exploration:', categorical_variables, placeholder='Select a categorical variable', index=0)
+    all_features = featured_df.select_dtypes(include=[np.number]).columns.tolist()
 
-    # Check if the user has selected a variable
-    #if categorical_variable_selection == '':
-    #    return
+    col1_overview, col2_overview = st.columns(2)
+
+    # Show all features button and reset button
+    show_all_features_overview = col1_overview.button('Show all features', key='show_all_features', help='Click to show all features')
+    if show_all_features_overview:
+        selected_features_overview = st.multiselect("Choose features:", all_features, default=all_features)
+    if col2_overview.button('Reset selection', key='reset_selection', help='Click to reset the selection'):
+        selected_features_overview = st.multiselect("Choose features:", all_features, default=all_features[:5])
+    elif not show_all_features_overview:
+        selected_features_overview = st.multiselect("Choose features:", all_features, default=all_features[:5])
+
+        
     
-    #categorical_variable_selection = categorical_variable_selection.split(':')[0]
 
-    # Frequency distribution as bar chart grouped by NSP
-    #fig = px.histogram(featured_df.join(target_df), x=categorical_variable_selection, color='NSP_Label', title=f'Frequency distribution of {categorical_variable_selection} grouped by NSP')
-    #st.plotly_chart(fig, use_container_width=True)
+
+    # Correlation heatmap
+    if len(selected_features_overview) > 1:
+        # Density plots for all features
+        n_cols = 2
+        cols = st.columns(n_cols)
+        for i, column in enumerate(featured_df[selected_features_overview].columns):
+            description = next((desc for desc in categorical_variables if desc.startswith(column)), column)
+            with cols[i % n_cols]:
+                fig, ax = plt.subplots()
+                sns.kdeplot(data=featured_df, x=column, hue=target_df['NSP_Label'], fill=True,
+                            palette={'Normal': 'green', 'Suspect': 'blue', 'Pathologic': 'red'})
+                ax.spines['top'].set_visible(False)
+                ax.spines['right'].set_visible(False)
+                ax.set_title(f'Distribution of {description}')
+                st.pyplot(fig)
 
     #### Heatmap
     ## Dropdown for correlation heatmap
@@ -140,16 +151,16 @@ def main(featured_df, target_df):
 
     if show_correlation == 'Yes':
         
-        all_features = featured_df.select_dtypes(include=[np.number]).columns.tolist()
-        
-        selected_features = st.multiselect("Choose features:", all_features, default=all_features[:5])
+        selected_features_corr = st.multiselect("Choose features:", all_features, default=all_features[:5], key='selected_features_corr')
 
         # Correlation heatmap
-        if len(selected_features) > 1:
+        if len(selected_features_corr) > 1:
             st.subheader('Correlation Heatmap of Selected Features')
-            corr_matrix = featured_df[selected_features].corr()
+            corr_matrix = featured_df[selected_features_corr].corr()
+            corr_matrix = corr_matrix.round(2)
             heatmap_fig = px.imshow(corr_matrix, text_auto=True, labels=dict(x="Feature", y="Feature", color="Correlation"), aspect="auto", color_continuous_scale='RdBu_r')
             st.plotly_chart(heatmap_fig, use_container_width=True)
+            
 
             st.markdown("""
             **💡 How to use this correlation matrix?**  
