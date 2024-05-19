@@ -19,7 +19,6 @@ def main(featured_df, target_df):
             unsafe_allow_html=True,
     )
 
-
     st.markdown("## Try your own Data")
 
     st.markdown("Enter your own data in the text fields below:")
@@ -28,39 +27,51 @@ def main(featured_df, target_df):
     # The user can input their own data for the features
     # The input data is stored in a dictionary
     user_input = {}
-    user_input['LB'] = st.text_input('FHR baseline (beats per minute)', '130')
-    user_input['AC'] = st.text_input('# of accelerations per second', '0')
-    user_input['FM'] = st.text_input('# of fetal movements per second', '0')
-    user_input['UC'] = st.text_input('# of uterine contractions per second', '0')
-    user_input['DL'] = st.text_input('# of light decelerations per second', '0')
-    user_input['DS'] = st.text_input('# of severe decelerations per second', '0')
-    user_input['DP'] = st.text_input('# of prolongued decelerations per second', '0')
-    user_input['ASTV'] = st.text_input('percentage of time with abnormal short term variability', '0')
-    user_input['MSTV'] = st.text_input('mean value of short term variability', '0')
-    user_input['ALTV'] = st.text_input('percentage of time with abnormal long term variability', '0')
-    user_input['MLTV'] = st.text_input('mean value of long term variability', '0')
-    user_input['Width'] = st.text_input('width of FHR histogram', '0')
-    user_input['Min'] = st.text_input('minimum of FHR histogram', '0')
-    user_input['Max'] = st.text_input('maximum of FHR histogram', '0')
-    user_input['Nmax'] = st.text_input('# of histogram peaks', '0')
-    user_input['Nzeros'] = st.text_input('# of histogram zeros', '0')
-    user_input['Mode'] = st.text_input('histogram mode', '0')
-    user_input['Mean'] = st.text_input('histogram mean', '0')
+    col1, col2, col3 = st.columns(3)
+    
+    user_input['LB'] = col1.number_input('FHR baseline (beats per minute)', 100, 200, None, 1, placeholder="LB")
+    user_input['AC'] = col2.number_input('# # of accelerations per second',  0.0, 0.02, None, 0.01, placeholder="AC")
+    user_input['FM'] = col3.number_input('# # of fetal movements per second', 0., 0.6, None, 0.01, placeholder="FM")
 
-    # Create a button to submit the data
-    if st.button('Submit'):
+    user_input['UC'] = col1.number_input('# # of uterine contractions per second', 0.0, 0.02, None, 0.01, placeholder="UC")
+    user_input['DL'] = col2.number_input('# # of light decelerations per second', 0.0, 0.02, None, 0.01, placeholder="DL")
+    user_input['DS'] = col3.number_input('# # of severe decelerations per second', 0.0, 0.002, None, 0.001, placeholder="DS")
+
+    user_input['DP'] = col1.number_input('# # of prolongued decelerations per second', 0.0, 0.01, None, 0.001, placeholder="DP")
+    user_input['ASTV'] = col2.number_input('percentage of time with abnormal short term variability', 0, 100, None, 1, placeholder="ASTV")
+    user_input['MSTV'] = col3.number_input('mean value of short term variability', 0.0, 10.0, None, 0.1, placeholder="MSTV")
+
+    user_input['ALTV'] = col1.number_input('percentage of time with abnormal long term variability', 0.0, 100.0, None, 0.1, placeholder="ALTV")
+    user_input['MLTV'] = col2.number_input('mean value of long term variability', 0.0, 55.0, None, 0.1, placeholder="MLTV")
+    user_input['Width'] = col3.number_input('width of FHR histogram', 0, 200, None, 1, placeholder="Width")
+
+    user_input['Min'] = col1.number_input('minimum of FHR histogram', 50, 180, None, 1, placeholder="Min")
+    user_input['Max'] = col2.number_input('maximum of FHR histogram', 100, 250, None, 1, placeholder="Max")
+    user_input['Nmax'] = col3.number_input('# # of histogram peaks', 0, 20, None, 1, placeholder="Nmax")
+
+    user_input['Nzeros'] = col1.number_input('# # of histogram zeros', 0, 15, None, 1, placeholder="Nzeros")
+    user_input['Mode'] = col2.number_input('histogram mode', 60, 190, None, 1, placeholder="Mode")
+    user_input['Mean'] = col3.number_input('histogram mean', 60, 200, None, 1, placeholder="Mean")
+
+    # Swith for using the normalized data
+    # If the switch is on, the data is normalized
+    # If the switch is off, the data is not normalized
+    # The default value is off
+    normalize = st.checkbox('Normalize Data', False)
+
+    if normalize:
+        st.write("# Work in progress")
+
+    
+
+    # Create a button to submit the input data
+    if st.button('Caluculate'):
         # Check if the input is a number
         for key in user_input:
-            try:
-                user_input[key] = float(user_input[key])
-            except ValueError:
-                st.error('Please enter a number for the input field')
-                break
-            if user_input[key] == 0:
+            if user_input[key] == None:
                 # skip this loop
                 continue
             else:
-                st.write(key, user_input[key])
                 # create a histogram for each feature
                 # show the input value as a vertical line
                 # show the histogram of the feature
