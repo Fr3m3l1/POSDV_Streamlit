@@ -122,36 +122,43 @@ def main(featured_df, target_df):
             st.pyplot(fig)
 
     # Select a categorical variable
-    categorical_variable_selection = st.selectbox('Select a categorical variable for exploration:', categorical_variables, placeholder='Select a categorical variable', index=0)
+    #categorical_variable_selection = st.selectbox('Select a categorical variable for exploration:', categorical_variables, placeholder='Select a categorical variable', index=0)
 
     # Check if the user has selected a variable
-    if categorical_variable_selection == '':
-        return
+    #if categorical_variable_selection == '':
+    #    return
     
-    categorical_variable_selection = categorical_variable_selection.split(':')[0]
+    #categorical_variable_selection = categorical_variable_selection.split(':')[0]
 
     # Frequency distribution as bar chart grouped by NSP
-    fig = px.histogram(featured_df.join(target_df), x=categorical_variable_selection, color='NSP_Label', title=f'Frequency distribution of {categorical_variable_selection} grouped by NSP')
-    st.plotly_chart(fig, use_container_width=True)
+    #fig = px.histogram(featured_df.join(target_df), x=categorical_variable_selection, color='NSP_Label', title=f'Frequency distribution of {categorical_variable_selection} grouped by NSP')
+    #st.plotly_chart(fig, use_container_width=True)
 
     #### Heatmap
     ## Dropdown for correlation heatmap
     show_correlation = st.selectbox('Are you interested to learn more about correlation in measurements?', ('Maybe later', 'Yes'))
 
     if show_correlation == 'Yes':
-        # Section: Correlation Heatmap
-        st.subheader('Correlation Heatmap of all measurements')
-        fig, ax = plt.subplots(figsize=(10, 8))
-        sns.heatmap(X.corr(), annot=True, cmap='coolwarm', fmt=".2f")
-        st.pyplot(fig)
+        
+        all_features = featured_df.select_dtypes(include=[np.number]).columns.tolist()
+        
+        selected_features = st.multiselect("Choose features:", all_features, default=all_features[:5])
 
-        st.markdown("""
-**💡 How to use this correlation matrix?**  
-This correlation matrix displays the relationships between various measurements in a patient's CTG data. 
-Darker shades signify stronger correlations, while lighter shades indicate weaker or no correlations. 
-Look for strong positive or negative correlations, as they may indicate significant information. 
-1 means positive correlation, -1 represents negative correlation.
-    """)
+        # Correlation heatmap
+        if len(selected_features) > 1:
+            st.subheader('Correlation Heatmap of Selected Features')
+            corr_matrix = featured_df[selected_features].corr()
+            heatmap_fig = px.imshow(corr_matrix, text_auto=True, labels=dict(x="Feature", y="Feature", color="Correlation"), aspect="auto", color_continuous_scale='RdBu_r')
+            st.plotly_chart(heatmap_fig, use_container_width=True)
+
+            st.markdown("""
+            **💡 How to use this correlation matrix?**  
+            This correlation matrix displays the relationships between various measurements in a patient's CTG data. 
+            Darker shades signify stronger correlations, while lighter shades indicate weaker or no correlations. 
+            Look for strong positive or negative correlations, as they may indicate significant information. 
+            1 means positive correlation, -1 represents negative correlation.
+                """)
+
         
     # show button to localhost:8501/tryout
     st.link_button('Try your own data', 'http://localhost:8501/tryout')
