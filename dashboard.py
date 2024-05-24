@@ -135,12 +135,25 @@ def main(featured_df, target_df):
         'FM': 'Fetal movements: The number of times the fetus moves during the monitoring period.',
         'UC': 'Uterine contractions: The number of contractions during the monitoring period, used to correlate with FHR patterns.',
         'ASTV': 'Abnormal Short-Term Variability: The percentage of time with abnormal short term variability, indicating potential distress.',
-        'mSTV': 'Mean Short-Term Variability: The average beat-to-beat variability of the fetal heart rate.',
+        'MSTV': 'Mean Short-Term Variability: The average beat-to-beat variability of the fetal heart rate.',
         'ALTV': 'Abnormal Long-Term Variability: The percentage of time with abnormal long term variability, indicating potential distress.',
-        'mLTV': 'Mean Long-Term Variability: The average variability over longer periods.',
+        'MLTV': 'Mean Long-Term Variability: The average variability over longer periods.',
         'DL': 'Light Decelerations: Temporary decreases in FHR, indicating potential distress but usually less severe.',
         'DS': 'Severe Decelerations: More significant decreases in FHR, indicating a higher level of distress.',
-        'DP': 'Prolonged Decelerations: Extended periods of decreased FHR, indicating potential sustained distress.'
+        'DP': 'Prolonged Decelerations: Extended periods of decreased FHR, indicating potential sustained distress.',
+        'DR': 'Rebound Decelerations: Decreases in FHR that are followed by an increase in FHR, indicating potential sustained distress.',
+        'Width' : 'The width of the FHR histogram represents the range of heart rate values observed over the monitoring period. It provides an indication of the variability in fetal heart rate, which is crucial for assessing fetal well-being.',
+        'Min': 'The minimum (low frequency) of the FHR histogram represents the lowest recorded fetal heart rate during the monitoring period. It helps in identifying instances of significant bradycardia, which could indicate fetal distress.',
+        'Max': 'The maximum (high frequency) of the FHR histogram represents the highest recorded fetal heart rate during the monitoring period. This can highlight episodes of fetal tachycardia, which may be associated with fetal or maternal conditions.',
+        'NMax': 'number of histogram peaks',
+        'Nzeros': 'number of histogram zeros',
+        'Mode': 'The mode of the histogram is the most frequently occurring fetal heart rate value during the monitoring period. It represents the central tendency of the fetal heart rate distribution.',
+        'Mean': 'mean of the histogram',
+        'Median': 'median of the histogram',
+        'Variance': 'The variance of the histogram measures the dispersion of the fetal heart rate values around the mean. High variance indicates greater variability in the fetal heart rate, which can be a sign of fetal well-being or distress.',
+        'Tendency': 'Histogram tendency indicates the skewness of the fetal heart rate distribution. A value of -1 indicates left asymmetry, 0 indicates symmetry, and 1 indicates right asymmetry. This feature helps in understanding the distribution pattern of the heart rate.',
+
+
     }
 
     sources = {
@@ -149,12 +162,23 @@ def main(featured_df, target_df):
         'FM': 'Source: [Example no source jet](https://www.example.com)',
         'UC': 'Source: [Bioengineering Journal](https://www.mdpi.com/2306-5354/11/4/368#B30-bioengineering-11-00368)',
         'ASTV': 'Source: [Frontiers in Bioengineering](https://www.frontiersin.org/articles/10.3389/fbioe.2022.887549/full)',
-        'mSTV': 'Source: [Example no source jet](https://www.example.com)',
+        'MSTV': 'Source: [Example no source jet](https://www.example.com)',
         'ALTV': 'Source: [Bioengineering Journal](https://www.mdpi.com/2306-5354/11/4/368#B30-bioengineering-11-00368)',
-        'mLTV': 'Source: [Frontiers in Bioengineering](https://www.frontiersin.org/articles/10.3389/fbioe.2022.887549/full)',
+        'MLTV': 'Source: [Frontiers in Bioengineering](https://www.frontiersin.org/articles/10.3389/fbioe.2022.887549/full)',
         'DL': 'Source: [Example no source jet](https://www.example.com)',
         'DS': 'Source: [Bioengineering Journal](https://www.mdpi.com/2306-5354/11/4/368#B30-bioengineering-11-00368)',
-        'DP': 'Source: [Frontiers in Bioengineering](https://www.frontiersin.org/articles/10.3389/fbioe.2022.887549/full)'
+        'DP': 'Source: [Frontiers in Bioengineering](https://www.frontiersin.org/articles/10.3389/fbioe.2022.887549/full)',
+        'DR': 'Source: [Example no source jet](https://www.example.com)',
+        'Width' : 'Source: [Journal of Advanced Analytics in Healthcare Management](https://research.tensorgate.org/index.php/JAAHM/article/view/38/44)',
+        'Min': 'Source: [Journal of Advanced Analytics in Healthcare Management](https://research.tensorgate.org/index.php/JAAHM/article/view/38/44)',
+        'Max': 'Source: [Journal of Advanced Analytics in Healthcare Management](https://research.tensorgate.org/index.php/JAAHM/article/view/38/44)',
+        'NMax': 'Source: [Example no source jet](https://www.example.com)',
+        'Nzeros': 'Source: [Example no source jet](https://www.example.com)',
+        'Mode': 'Source: [Journal of Advanced Analytics in Healthcare Management](https://research.tensorgate.org/index.php/JAAHM/article/view/38/44)',
+        'Mean': 'Source: [Example no source jet](https://www.example.com)',
+        'Median': 'Source: [Example no source jet](https://www.example.com)',
+        'Variance': 'Source: [Journal of Advanced Analytics in Healthcare Management](https://research.tensorgate.org/index.php/JAAHM/article/view/38/44)',
+        'Tendency': 'Source: [Journal of Advanced Analytics in Healthcare Management](https://research.tensorgate.org/index.php/JAAHM/article/view/38/44)',
     }
 
     st.markdown('### Detailed Descriptions of Selected Features')
