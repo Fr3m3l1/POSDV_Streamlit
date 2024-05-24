@@ -1,13 +1,11 @@
 import streamlit as st
-import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
-from ucimlrepo import fetch_ucirepo 
 import plotly.express as px
-import plotly.graph_objects as go
 from sklearn.decomposition import PCA
 import seaborn as sns
-import os
+
+import functions.helpers as helpers
 
 # Set the page configuration
 st.set_page_config(initial_sidebar_state="collapsed")
@@ -122,11 +120,10 @@ def main(featured_df, target_df):
     show_all_features_desc = col1_desc.button('Show all features (desc)', key='show_all_features_desc', help='Click to show all features')
     if show_all_features_desc:
         selected_features_desc = st.multiselect("Choose features (desc):", all_features, default=all_features, key='multiselect_all_features_desc')
-    else:
-        if col2_desc.button('Reset selection (desc)', key='reset_selection_desc', help='Click to reset the selection'):
-            selected_features_desc = st.multiselect("Choose features (desc):", all_features, default=all_features[:5], key='multiselect_reset_desc')
-        else:
-            selected_features_desc = st.multiselect("Choose features (desc):", all_features, default=all_features[:5], key='multiselect_default_desc')
+    if col2_desc.button('Reset selection (desc)', key='reset_selection_desc', help='Click to reset the selection'):
+        selected_features_desc = st.multiselect("Choose features (desc):", all_features, default=all_features[:5], key='multiselect_reset_desc')
+    elif not show_all_features_desc:
+        selected_features_desc = st.multiselect("Choose features (desc):", all_features, default=all_features[:5], key='multiselect_default_desc')
 
     # Descriptions and sources for the features
     feature_descriptions = {
@@ -256,36 +253,6 @@ def main(featured_df, target_df):
     # show button to localhost:8501/tryout
     st.link_button('Try your own data', 'http://localhost:8501/tryout')
 
-def loaddata():
-    data_dir = 'data'
-    if not os.path.exists(data_dir):
-        os.makedirs(data_dir)
-        print(f"Directory '{data_dir}' created.")
-    else:
-        print(f"Directory '{data_dir}' already exists.")
-
-    # Fetch dataset
-    try:
-        cardiotocography = fetch_ucirepo(id=193) 
-
-        # Save data to csv for later use in case the API is down
-        cardiotocography.data.features.to_csv('data/featured_df.csv', index=False)
-        cardiotocography.data.targets.to_csv('data/target_df.csv', index=False)
-        
-        # Data (as pandas dataframes) 
-        featured_df = cardiotocography.data.features 
-        target_df = cardiotocography.data.targets
-
-    except:
-        # Load data from csv
-        featured_df = pd.read_csv('data/featured_df.csv')
-        target_df = pd.read_csv('data/target_df.csv')
-        
-    # Convert NSP to categorical
-    target_df['NSP_Label'] = target_df['NSP'].map({1: 'Normal', 2: 'Suspect', 3: 'Pathologic'})
-        
-    return featured_df, target_df
-
 if __name__ == '__main__':
-    featured_df, target_df = loaddata()
+    featured_df, target_df = helpers.loaddata()
     main(featured_df, target_df)

@@ -1,9 +1,7 @@
 import streamlit as st
-import matplotlib.pyplot as plt
-import pandas as pd
-from ucimlrepo import fetch_ucirepo 
 import plotly.express as px
-import os
+
+import functions.helpers as helpers
 
 def main(featured_df, target_df):
 
@@ -97,36 +95,6 @@ def main(featured_df, target_df):
                 st.plotly_chart(fig, use_container_width=True)
 
 
-
-def loaddata():
-    data_dir = 'data'
-    if not os.path.exists(data_dir):
-        os.makedirs(data_dir)
-        print(f"Directory '{data_dir}' created.")
-    else:
-        print(f"Directory '{data_dir}' already exists.")
-    # Fetch dataset
-    try:
-        cardiotocography = fetch_ucirepo(id=193) 
-
-        # Save data to csv for later use in case the API is down
-        cardiotocography.data.features.to_csv('data/featured_df.csv', index=False)
-        cardiotocography.data.targets.to_csv('data/target_df.csv', index=False)
-        
-        # Data (as pandas dataframes) 
-        featured_df = cardiotocography.data.features 
-        target_df = cardiotocography.data.targets
-
-    except:
-        # Load data from csv
-        featured_df = pd.read_csv('data/featured_df.csv')
-        target_df = pd.read_csv('data/target_df.csv')
-        
-    # Convert NSP to categorical
-    target_df['NSP_Label'] = target_df['NSP'].map({1: 'Normal', 2: 'Suspect', 3: 'Pathologic'})
-        
-    return featured_df, target_df
-
 if __name__ == '__main__':
-    featured_df, target_df = loaddata()
+    featured_df, target_df = helpers.loaddata()
     main(featured_df, target_df)
