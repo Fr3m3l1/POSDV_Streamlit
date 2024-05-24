@@ -3,6 +3,11 @@ import pandas as pd
 from ucimlrepo import fetch_ucirepo 
 
 def loaddata():
+    """
+    Load the Cardiotocography dataset from the UCI repository.
+    """
+
+    # Create data directory if it does not exist
     data_dir = 'data'
     if not os.path.exists(data_dir):
         os.makedirs(data_dir, exist_ok=True)

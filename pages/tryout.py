@@ -59,9 +59,7 @@ def main(featured_df, target_df):
     normalize = st.checkbox('Normalize Data', False)
 
     if normalize:
-        st.write("# Work in progress")
-
-    
+        st.write("# Work in progress")    
 
     # Create a button to submit the input data
     if st.button('Caluculate'):
@@ -75,12 +73,12 @@ def main(featured_df, target_df):
                 # show the input value as a vertical line
                 # show the histogram of the feature
                 # use the following colors for the NSP labels: Normal: blue, Suspect: orange, Pathologic: red
-                fig = px.histogram(featured_df.join(target_df), x=featured_df[key], color='NSP_Label', title=f'{key} histogram', labels={'NSP_Label': 'NSP Label', 'count': 'Count', 'x': key}, color_discrete_map={'Normal': 'green', 'Suspect': 'blue', 'Pathologic': 'red'})
-                fig.add_vline(x=user_input[key], line_dash="dash", line_color="red", annotation_text=f'Your input: {user_input[key]}')
-                fig.update_layout(barmode='overlay')
-                fig.update_traces(opacity=0.5)
-                fig.update_xaxes(categoryorder='total descending')
-                st.plotly_chart(fig, use_container_width=True)
+                #fig = px.histogram(featured_df.join(target_df), x=featured_df[key], color='NSP_Label', title=f'{key} histogram', labels={'NSP_Label': 'NSP Label', 'count': 'Count', 'x': key}, color_discrete_map={'Normal': 'green', 'Suspect': 'blue', 'Pathologic': 'red'})
+                #fig.add_vline(x=user_input[key], line_dash="dash", line_color="red", annotation_text=f'Your input: {user_input[key]}')
+                #fig.update_layout(barmode='overlay')
+                #fig.update_traces(opacity=0.5)
+                #fig.update_xaxes(categoryorder='total descending')
+                #st.plotly_chart(fig, use_container_width=True)
 
                 # create 3 plot for each Label (Normal, Suspect, Pathologic)
                 # show the input value as a vertical line
@@ -91,7 +89,13 @@ def main(featured_df, target_df):
                 fig.add_vline(x=user_input[key], line_dash="dash", line_color="red", annotation_text=f'Your input: {user_input[key]}')
                 fig.update_layout(barmode='overlay')
                 fig.update_traces(opacity=1)
-                fig.update_xaxes(categoryorder='total descending')
+                # all the y axis should have the maximum count of a value of the histogram for each label
+                gist = featured_df.join(target_df)
+                max_count = gist.groupby('NSP_Label')[key].value_counts().max()
+                print(max_count)
+                fig.update_yaxes(range=[0, max_count])
+                # TODO: STILL WORK IN PROGRESS
+
                 st.plotly_chart(fig, use_container_width=True)
 
 
