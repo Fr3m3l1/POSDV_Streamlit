@@ -184,12 +184,10 @@ def main(featured_df, target_df):
         source = sources.get(feature, 'No source available.')
         st.markdown(f"**{feature}**: {description}\n{source}")
 
-
-
     # Make divider line
     st.write('---')
 
-    st.markdown('### Overview of all measurments dirstribution:')
+    st.markdown('### Overview of all measurements distribution:')
 
     all_features = featured_df.select_dtypes(include=[np.number]).columns.tolist()
 
@@ -204,9 +202,30 @@ def main(featured_df, target_df):
     elif not show_all_features_overview:
         selected_features_overview = st.multiselect("Choose features:", all_features, default=all_features[:5])
 
-        
-    
-
+    # Intermittent red lines for normal reference values
+    red_lines = {
+        'LB': [110, 150],
+        'AC': [0, 0.013],
+        #'FM': [0.00139, 0.00417],
+        'UC': [0, 0.0083],
+        'DL': [0.00167, 0],
+        #'DS': [0.00111, 0],
+        #'DP': [0, 0.00056],
+        'ASTV': [20, 58],
+        'MSTV': [0.5, 2.5],
+        'ALTV': [0, 13],
+        'MLTV': [4, 17],
+        'Width': [25, 140],
+        #'Min': [50, 100],
+        #'Max': [100, 200],
+        #'Nmax': [0, 10],
+        #'Nzeros': [0, 10],
+        #'Mode': [100, 150],
+        #'Mean': [100, 150],
+        #'Median': [100, 150],
+        #'Variance': [0, 100],
+        #'Tendency': [-1, 1]
+    }
 
     # Correlation heatmap
     if len(selected_features_overview) > 1:
@@ -219,6 +238,12 @@ def main(featured_df, target_df):
                 fig, ax = plt.subplots()
                 sns.kdeplot(data=featured_df, x=column, hue=target_df['NSP_Label'], fill=True,
                             palette={'Normal': 'green', 'Suspect': 'blue', 'Pathologic': 'red'})
+                
+                # Add intermittent red lines
+                if column in red_lines:
+                    for line in red_lines[column]:
+                        ax.axvline(line, color='red', linestyle='--')
+                
                 ax.spines['top'].set_visible(False)
                 ax.spines['right'].set_visible(False)
                 ax.set_title(f'Distribution of {description}')
@@ -234,7 +259,7 @@ def main(featured_df, target_df):
 
         # Correlation heatmap
         if len(selected_features_corr) > 1:
-            st.subheader('Correlation Heatmap of Selected Features')
+            st.subheader('Correlation Heatmap of Selected Measurements:')
             corr_matrix = featured_df[selected_features_corr].corr()
             corr_matrix = corr_matrix.round(2)
             heatmap_fig = px.imshow(corr_matrix, text_auto=True, labels=dict(x="Feature", y="Feature", color="Correlation"), aspect="auto", color_continuous_scale='RdBu_r', zmin=-1, zmax=1)
@@ -243,10 +268,10 @@ def main(featured_df, target_df):
 
             st.markdown("""
             **💡 How to use this correlation matrix?**  
-            This correlation matrix displays the relationships between various measurements in a patient's CTG data. 
-            Darker shades signify stronger correlations, while lighter shades indicate weaker or no correlations. 
+            This correlationheatmap displays the relationships between various measurements in a patient's CTG data. 
+            Darker shades of red signify stronger positive correlations, while lighter shades indicate weaker correlations. 
             Look for strong positive or negative correlations, as they may indicate significant information. 
-            1 means positive correlation, -1 represents negative correlation.
+            1 means positive correlation, -1 represents negative correlation, 0 indicates no correlation.
                 """)
 
         
