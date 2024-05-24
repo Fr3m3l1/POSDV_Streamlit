@@ -111,6 +111,63 @@ def main(featured_df, target_df):
 
     # Make divider line
     st.write('---')
+
+    # Description of all features
+    st.markdown('### Description of all features:')
+
+    all_features = featured_df.select_dtypes(include=[np.number]).columns.tolist()
+    col1_desc, col2_desc = st.columns(2)
+
+    # Show all features button and reset button for the feature descriptions
+    show_all_features_desc = col1_desc.button('Show all features (desc)', key='show_all_features_desc', help='Click to show all features')
+    if show_all_features_desc:
+        selected_features_desc = st.multiselect("Choose features (desc):", all_features, default=all_features, key='multiselect_all_features_desc')
+    else:
+        if col2_desc.button('Reset selection (desc)', key='reset_selection_desc', help='Click to reset the selection'):
+            selected_features_desc = st.multiselect("Choose features (desc):", all_features, default=all_features[:5], key='multiselect_reset_desc')
+        else:
+            selected_features_desc = st.multiselect("Choose features (desc):", all_features, default=all_features[:5], key='multiselect_default_desc')
+
+    # Descriptions and sources for the features
+    feature_descriptions = {
+        'LB': 'Baseline value: The average heart rate during a 10-minute window, excluding accelerations and decelerations.',
+        'AC': 'Accelerations: Temporary increases in FHR of at least 15 beats per minute above the baseline, lasting for at least 15 seconds.',
+        'FM': 'Fetal movements: The number of times the fetus moves during the monitoring period.',
+        'UC': 'Uterine contractions: The number of contractions during the monitoring period, used to correlate with FHR patterns.',
+        'ASTV': 'Abnormal Short-Term Variability: The percentage of time with abnormal short term variability, indicating potential distress.',
+        'mSTV': 'Mean Short-Term Variability: The average beat-to-beat variability of the fetal heart rate.',
+        'ALTV': 'Abnormal Long-Term Variability: The percentage of time with abnormal long term variability, indicating potential distress.',
+        'mLTV': 'Mean Long-Term Variability: The average variability over longer periods.',
+        'DL': 'Light Decelerations: Temporary decreases in FHR, indicating potential distress but usually less severe.',
+        'DS': 'Severe Decelerations: More significant decreases in FHR, indicating a higher level of distress.',
+        'DP': 'Prolonged Decelerations: Extended periods of decreased FHR, indicating potential sustained distress.'
+    }
+
+    sources = {
+        'LB': 'Source: [Bioengineering Journal](https://www.mdpi.com/2306-5354/11/4/368#B30-bioengineering-11-00368)',
+        'AC': 'Source: [Frontiers in Bioengineering](https://www.frontiersin.org/articles/10.3389/fbioe.2022.887549/full)',
+        'FM': 'Source: [Example no source jet](https://www.example.com)',
+        'UC': 'Source: [Bioengineering Journal](https://www.mdpi.com/2306-5354/11/4/368#B30-bioengineering-11-00368)',
+        'ASTV': 'Source: [Frontiers in Bioengineering](https://www.frontiersin.org/articles/10.3389/fbioe.2022.887549/full)',
+        'mSTV': 'Source: [Example no source jet](https://www.example.com)',
+        'ALTV': 'Source: [Bioengineering Journal](https://www.mdpi.com/2306-5354/11/4/368#B30-bioengineering-11-00368)',
+        'mLTV': 'Source: [Frontiers in Bioengineering](https://www.frontiersin.org/articles/10.3389/fbioe.2022.887549/full)',
+        'DL': 'Source: [Example no source jet](https://www.example.com)',
+        'DS': 'Source: [Bioengineering Journal](https://www.mdpi.com/2306-5354/11/4/368#B30-bioengineering-11-00368)',
+        'DP': 'Source: [Frontiers in Bioengineering](https://www.frontiersin.org/articles/10.3389/fbioe.2022.887549/full)'
+    }
+
+    st.markdown('### Detailed Descriptions of Selected Features')
+    for feature in selected_features_desc:
+        description = feature_descriptions.get(feature, 'No description available.')
+        source = sources.get(feature, 'No source available.')
+        st.markdown(f"**{feature}**: {description}\n{source}")
+
+
+
+    # Make divider line
+    st.write('---')
+
     st.markdown('### Overview of all measurments dirstribution:')
 
     all_features = featured_df.select_dtypes(include=[np.number]).columns.tolist()
