@@ -159,7 +159,7 @@ def main(featured_df, target_df):
             st.subheader('Correlation Heatmap of Selected Features')
             corr_matrix = featured_df[selected_features_corr].corr()
             corr_matrix = corr_matrix.round(2)
-            heatmap_fig = px.imshow(corr_matrix, text_auto=True, labels=dict(x="Feature", y="Feature", color="Correlation"), aspect="auto", color_continuous_scale='RdBu_r')
+            heatmap_fig = px.imshow(corr_matrix, text_auto=True, labels=dict(x="Feature", y="Feature", color="Correlation"), aspect="auto", color_continuous_scale='RdBu_r', zmin=-1, zmax=1)
             st.plotly_chart(heatmap_fig, use_container_width=True)
             
 
