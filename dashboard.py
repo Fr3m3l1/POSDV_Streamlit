@@ -7,6 +7,7 @@ import plotly.express as px
 import plotly.graph_objects as go
 from sklearn.decomposition import PCA
 import seaborn as sns
+import os
 
 # Set the page configuration
 st.set_page_config(initial_sidebar_state="collapsed")
@@ -175,6 +176,13 @@ def main(featured_df, target_df):
     st.link_button('Try your own data', 'http://localhost:8501/tryout')
 
 def loaddata():
+    data_dir = 'data'
+    if not os.path.exists(data_dir):
+        os.makedirs(data_dir)
+        print(f"Directory '{data_dir}' created.")
+    else:
+        print(f"Directory '{data_dir}' already exists.")
+
     # Fetch dataset
     try:
         cardiotocography = fetch_ucirepo(id=193) 

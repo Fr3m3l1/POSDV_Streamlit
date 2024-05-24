@@ -3,6 +3,7 @@ import matplotlib.pyplot as plt
 import pandas as pd
 from ucimlrepo import fetch_ucirepo 
 import plotly.express as px
+import os
 
 def main(featured_df, target_df):
 
@@ -98,6 +99,12 @@ def main(featured_df, target_df):
 
 
 def loaddata():
+    data_dir = 'data'
+    if not os.path.exists(data_dir):
+        os.makedirs(data_dir)
+        print(f"Directory '{data_dir}' created.")
+    else:
+        print(f"Directory '{data_dir}' already exists.")
     # Fetch dataset
     try:
         cardiotocography = fetch_ucirepo(id=193) 
