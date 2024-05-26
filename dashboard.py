@@ -255,6 +255,9 @@ def main(featured_df, target_df):
 
     if show_correlation == 'Yes':
 
+        st.write('---')
+        st.markdown('### Correlation Heatmap:')
+
         col1_corr, col2_corr = st.columns(2)
 
         # Show all features button and reset button
@@ -269,7 +272,7 @@ def main(featured_df, target_df):
 
         # Correlation heatmap
         if len(selected_features_corr) > 1:
-            st.subheader('Correlation Heatmap of Selected Measurements:')
+            st.markdown('#### Correlation Heatmap of Selected Measurements:')
             corr_matrix = featured_df[selected_features_corr].corr()
             corr_matrix = corr_matrix.round(2)
             heatmap_fig = px.imshow(corr_matrix, text_auto=True, labels=dict(x="Feature", y="Feature", color="Correlation"), aspect="auto", color_continuous_scale='RdBu_r', zmin=-1, zmax=1)

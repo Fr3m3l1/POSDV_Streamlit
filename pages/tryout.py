@@ -92,6 +92,10 @@ def main(featured_df, target_df):
                 fig.update_layout(barmode='overlay')
                 fig.update_traces(opacity=1)
 
+                # Change facet row labels
+                #fig.for_each_annotation(lambda a: a.update(text=a.text.split("=")[-1]))
+                fig.for_each_annotation(lambda a: a.update(text=""))
+
                 if change_yScale:
                     fig.update_yaxes(matches=None)
 
