@@ -59,7 +59,9 @@ def main(featured_df, target_df):
     normalize = st.checkbox('Normalize Data', False)
 
     if normalize:
-        st.write("# Work in progress")    
+        change_yScale = True
+    else:
+        change_yScale = False
 
     # Create a button to submit the input data
     if st.button('Caluculate'):
@@ -89,12 +91,9 @@ def main(featured_df, target_df):
                 fig.add_vline(x=user_input[key], line_dash="dash", line_color="red", annotation_text=f'Your input: {user_input[key]}')
                 fig.update_layout(barmode='overlay')
                 fig.update_traces(opacity=1)
-                # all the y axis should have the maximum count of a value of the histogram for each label
-                gist = featured_df.join(target_df)
-                max_count = gist.groupby('NSP_Label')[key].value_counts().max()
-                print(max_count)
-                fig.update_yaxes(range=[0, max_count])
-                # TODO: STILL WORK IN PROGRESS
+
+                if change_yScale:
+                    fig.update_yaxes(matches=None)
 
                 st.plotly_chart(fig, use_container_width=True)
 

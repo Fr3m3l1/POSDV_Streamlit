@@ -26,7 +26,7 @@ def main(featured_df, target_df):
     st.title('Cardiotocography Dashboard')
 
     # Show intro text
-    st.markdown('This dashboard provides an overview of a Cardiotocography dataset. The dataset contains features of fetal heart rate (FHR) and uterine contractions (UC) and the target variable Normal, Suspect, Pathologic (NSP). Feel free to explore the dataset by selecting a categorical variable from the dropdown menu below.')
+    st.markdown('This dashboard provides an overview of a [Cardiotocography dataset](https://archive.ics.uci.edu/dataset/193/cardiotocography). The dataset contains features of fetal heart rate (FHR) and uterine contractions (UC) and the target variable Normal, Suspect, Pathologic (NSP). Feel free to explore the dataset by selecting a categorical variable from the dropdown menu below.')
 
     st.markdown('### Cardiotocography dataset overview:')
     # Number of features
@@ -178,7 +178,7 @@ def main(featured_df, target_df):
         'Tendency': 'Source: [Journal of Advanced Analytics in Healthcare Management](https://research.tensorgate.org/index.php/JAAHM/article/view/38/44)',
     }
 
-    st.markdown('### Detailed Descriptions of Selected Features')
+    st.markdown('#### Detailed Descriptions of Selected Features')
     for feature in selected_features_desc:
         description = feature_descriptions.get(feature, 'No description available.')
         source = sources.get(feature, 'No source available.')
@@ -254,8 +254,18 @@ def main(featured_df, target_df):
     show_correlation = st.selectbox('Are you interested to learn more about correlation in measurements?', ('Maybe later', 'Yes'))
 
     if show_correlation == 'Yes':
-        
-        selected_features_corr = st.multiselect("Choose features:", all_features, default=all_features[:5], key='selected_features_corr')
+
+        col1_corr, col2_corr = st.columns(2)
+
+        # Show all features button and reset button
+        show_all_features_corr = col1_corr.button('Show all features', key='show_all_features_corr', help='Click to show all features')
+
+        if show_all_features_corr:
+            selected_features_corr = st.multiselect("Choose features:", all_features, default=all_features, key='multiselect_all_features_corr')
+        if col2_corr.button('Reset selection', key='reset_selection_corr', help='Click to reset the selection'):
+            selected_features_corr = st.multiselect("Choose features:", all_features, default=all_features[:5], key='multiselect_reset_corr')
+        elif not show_all_features_corr:
+            selected_features_corr = st.multiselect("Choose features:", all_features, default=all_features[:5], key='multiselect_default_corr')
 
         # Correlation heatmap
         if len(selected_features_corr) > 1:
