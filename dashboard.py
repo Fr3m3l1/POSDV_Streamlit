@@ -227,7 +227,7 @@ def main(featured_df, target_df):
         #'Tendency': [-1, 1]
     }
 
-    # Correlation heatmap
+    # Density Plot
     if len(selected_features_overview) > 1:
         # Density plots for all features
         n_cols = 2
