@@ -25,38 +25,34 @@ def main(featured_df, target_df):
 
     col1_button, col2_button, col3_button = st.columns(3)
 
+    sample_data = None
+
     # select example data with a button click
     if col1_button.button('Select Normal Data'):
-        # select random normal data
-        random_int = random.randint(0, len(target_df[target_df['NSP_Label'] == 'Normal'])-1)
-
         example_data = featured_df[target_df['NSP_Label'] == 'Normal'].sample(1)
         # show the example data in the text fields
         st.write(example_data)
 
         sample_data = True
         target = "Normal"
-    elif col2_button.button('Select Suspect Data'):
-        # select random suspect data
-        random_int = random.randint(0, len(target_df[target_df['NSP_Label'] == 'Suspect'])-1)
 
+    if col2_button.button('Select Suspect Data'):
         example_data = featured_df[target_df['NSP_Label'] == 'Suspect'].sample(1)
         # show the example data in the text fields
         st.write(example_data)
 
         sample_data = True
         target = "Suspect"
-    elif col3_button.button('Select Pathologic Data'):
-        # select random pathologic data
-        random_int = random.randint(0, len(target_df[target_df['NSP_Label'] == 'Pathologic'])-1)
 
+    if col3_button.button('Select Pathologic Data'):
         example_data = featured_df[target_df['NSP_Label'] == 'Pathologic'].sample(1)
         # show the example data in the text fields
         st.write(example_data)
 
         sample_data = True
         target = "Pathologic"
-    else:
+
+    if sample_data is None:
         # define the example data as an empty array for each column
         example_data = featured_df.sample(1)
         example_data['LB'] = None
