@@ -1,23 +1,24 @@
 import streamlit as st
 import plotly.express as px
-import random
 
 import functions.helpers as helpers
 
+
+st.set_page_config(initial_sidebar_state="collapsed", page_title="CTG Tryout", page_icon=":heart:")
+
+st.markdown(
+        """
+    <style>
+        [data-testid="collapsedControl"] {
+            display: none
+        }
+    </style>
+    """,
+        unsafe_allow_html=True,
+)
+
+
 def main(featured_df, target_df):
-
-    st.set_page_config(initial_sidebar_state="collapsed")
-
-    st.markdown(
-            """
-        <style>
-            [data-testid="collapsedControl"] {
-                display: none
-            }
-        </style>
-        """,
-            unsafe_allow_html=True,
-    )
 
     st.markdown("## Try your own Data")
 
@@ -53,36 +54,40 @@ def main(featured_df, target_df):
         target = "Pathologic"
 
     if sample_data is None:
+
+        print("No sample data selected")
+
         # define the example data as an empty array for each column
         example_data = featured_df.sample(1)
-        example_data['LB'] = None
-        example_data['AC'] = None
-        example_data['FM'] = None
-        example_data['UC'] = None
-        example_data['DL'] = None
-        example_data['DS'] = None
-        example_data['DP'] = None
-        example_data['ASTV'] = None
-        example_data['MSTV'] = None
-        example_data['ALTV'] = None
-        example_data['MLTV'] = None
-        example_data['Width'] = None
-        example_data['Min'] = None
-        example_data['Max'] = None
-        example_data['Nmax'] = None
-        example_data['Nzeros'] = None
-        example_data['Mode'] = None
-        example_data['Mean'] = None
+        example_data['LB'] = helpers.load_session_data('LB')
+        example_data['AC'] = helpers.load_session_data('AC')
+        example_data['FM'] = helpers.load_session_data('FM')
+        example_data['UC'] = helpers.load_session_data('UC')
+        example_data['DL'] = helpers.load_session_data('DL')
+        example_data['DS'] = helpers.load_session_data('DS')
+        example_data['DP'] = helpers.load_session_data('DP')
+        example_data['ASTV'] = helpers.load_session_data('ASTV')
+        example_data['MSTV'] = helpers.load_session_data('MSTV')
+        example_data['ALTV'] = helpers.load_session_data('ALTV')
+        example_data['MLTV'] = helpers.load_session_data('MLTV')
+        example_data['Width'] = helpers.load_session_data('Width')
+        example_data['Min'] = helpers.load_session_data('Min')
+        example_data['Max'] = helpers.load_session_data('Max')
+        example_data['Nmax'] = helpers.load_session_data('Nmax')
+        example_data['Nzeros'] = helpers.load_session_data('Nzeros')
+        example_data['Mode'] = helpers.load_session_data('Mode')
+        example_data['Mean'] = helpers.load_session_data('Mean')
 
         sample_data = False
 
     # Create text input fields for user input data
     # The user can input their own data for the features
     # The input data is stored in a dictionary
-    user_input = {}
     col1, col2, col3 = st.columns(3)
 
-    print(example_data["LB"].values[0])
+    user_input = {}
+
+    print("Example data: ", example_data)
     
     user_input['LB'] = col1.number_input('FHR baseline (beats per minute)', 100, 200, example_data["LB"].values[0], 1, placeholder="LB")
     user_input['AC'] = col2.number_input('# # of accelerations per second',  0.0, 0.02, example_data["AC"].values[0], 0.01, placeholder="AC")
@@ -107,6 +112,10 @@ def main(featured_df, target_df):
     user_input['Nzeros'] = col1.number_input('# # of histogram zeros', 0, 15, example_data["Nzeros"].values[0], 1, placeholder="Nzeros")
     user_input['Mode'] = col2.number_input('histogram mode', 60, 190, example_data["Mode"].values[0], 1, placeholder="Mode")
     user_input['Mean'] = col3.number_input('histogram mean', 60, 200, example_data["Mean"].values[0], 1, placeholder="Mean")
+
+    # Save the user input data to a csv file
+    for key in user_input:
+        helpers.save_session_data(key, user_input[key])
 
     # Swith for using the normalized data
     # If the switch is on, the data is normalized

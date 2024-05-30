@@ -8,7 +8,7 @@ import seaborn as sns
 import functions.helpers as helpers
 
 # Set the page configuration
-st.set_page_config(initial_sidebar_state="collapsed")
+st.set_page_config(initial_sidebar_state="collapsed", page_title='Cardiotocography Dashboard', page_icon='🩺')
 
 # Hide sidebar and its pages
 st.markdown(
@@ -23,6 +23,7 @@ st.markdown(
 )
 
 def main(featured_df, target_df):
+
     st.title('Cardiotocography Dashboard')
 
     # Show intro text
