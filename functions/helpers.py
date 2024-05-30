@@ -3,6 +3,7 @@ import json
 import pandas as pd
 from ucimlrepo import fetch_ucirepo 
 
+pd.options.mode.chained_assignment = None  # Suppress the warning
 
 def loaddata():
     """Load the Cardiotocography dataset from the UCI repository."""
@@ -23,7 +24,6 @@ def loaddata():
         featured_df = pd.read_csv('data/featured_df.csv')
         target_df = pd.read_csv('data/target_df.csv')
 
-    # Use .loc for explicit modification:
     target_df.loc[:, 'NSP_Label'] = target_df['NSP'].map({1: 'Normal', 2: 'Suspect', 3: 'Pathologic'})
 
     return featured_df, target_df
