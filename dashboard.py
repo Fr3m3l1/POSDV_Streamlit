@@ -243,7 +243,7 @@ def main(featured_df, target_df):
                 # Add intermittent red lines
                 if column in red_lines:
                     for line in red_lines[column]:
-                        ax.axvline(line, color='red', linestyle='--')
+                        ax.axvline(line, color='red', linestyle='--', linewidth=1, label='Normal Reference Values')
                 
                 ax.spines['top'].set_visible(False)
                 ax.spines['right'].set_visible(False)
@@ -290,7 +290,7 @@ def main(featured_df, target_df):
 
         
     # show button to localhost:8501/tryout
-    st.link_button('Try your own data', 'http://localhost:8501/tryout')
+    st.link_button('Try your own data', '/tryout')
 
 if __name__ == '__main__':
     featured_df, target_df = helpers.loaddata()
