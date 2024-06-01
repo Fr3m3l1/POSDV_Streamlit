@@ -163,6 +163,11 @@ def main(featured_df, target_df):
                 #fig.for_each_annotation(lambda a: a.update(text=a.text.split("=")[-1]))
                 fig.for_each_annotation(lambda a: a.update(text=""))
 
+                
+                # Remove y-axis labels for the first and third plot
+                fig.update_layout(yaxis_title="", yaxis3_title="")
+
+
                 if change_yScale:
                     fig.update_yaxes(matches=None)
 

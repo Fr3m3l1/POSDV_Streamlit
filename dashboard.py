@@ -55,9 +55,9 @@ def main(featured_df, target_df):
                              'DL: # of light decelerations per second',
                              'DS: # of severe decelerations per second',
                              'DP: # of prolongued decelerations per second',
-                             'ASTV: percentage of time with abnormal short term variability',
+                             'ASTV: % of time with abnormal short term variability',
                              'MSTV: mean value of short term variability',
-                             'ALTV: percentage of time with abnormal long term variability',
+                             'ALTV: % of time with abnormal long term variability',
                              'MLTV: mean value of long term variability',
                              'Width: width of FHR histogram',
                              'Min: minimum of FHR histogram',
@@ -227,28 +227,39 @@ def main(featured_df, target_df):
         #'Variance': [0, 100],
         #'Tendency': [-1, 1]
     }
+    
 
-    # Density Plot
     if len(selected_features_overview) > 1:
-        # Density plots for all features
+        # Density plot for selected features
         n_cols = 2
-        cols = st.columns(n_cols)
+        n_rows = (len(selected_features_overview) + 1) // n_cols
+
+        fig, axes = plt.subplots(n_rows, n_cols, figsize=(20, n_rows * 6), constrained_layout=True)
+
         for i, column in enumerate(featured_df[selected_features_overview].columns):
+            ax = axes[i // n_cols, i % n_cols]
             description = next((desc for desc in categorical_variables if desc.startswith(column)), column)
-            with cols[i % n_cols]:
-                fig, ax = plt.subplots()
-                sns.kdeplot(data=featured_df, x=column, hue=target_df['NSP_Label'], fill=True,
-                            palette={'Normal': 'green', 'Suspect': 'blue', 'Pathologic': 'red'})
-                
-                # Add intermittent red lines
-                if column in red_lines:
-                    for line in red_lines[column]:
-                        ax.axvline(line, color='red', linestyle='--', linewidth=1, label='Normal Reference Values')
-                
-                ax.spines['top'].set_visible(False)
-                ax.spines['right'].set_visible(False)
-                ax.set_title(f'Distribution of {description}')
-                st.pyplot(fig)
+            sns.kdeplot(data=featured_df, x=column, hue=target_df['NSP_Label'], fill=True,
+                        palette={'Normal': 'green', 'Suspect': 'blue', 'Pathologic': 'red'}, ax=ax)
+
+            # Add intermittent red lines
+            if column in red_lines:
+                for line in red_lines[column]:
+                    ax.axvline(line, color='red', linestyle='--', linewidth=1)
+            
+            ax.spines['top'].set_visible(False)
+            ax.spines['right'].set_visible(False)
+            ax.set_title(f'Distribution of {description}', fontsize=18, fontweight='bold')
+
+
+        # Hide any unused subplots
+        for j in range(i + 1, n_rows * n_cols):
+            fig.delaxes(axes.flatten()[j])
+
+        st.pyplot(fig)
+
+
+
 
     #### Heatmap
     ## Dropdown for correlation heatmap
