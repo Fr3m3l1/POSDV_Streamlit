@@ -234,7 +234,13 @@ def main(featured_df, target_df):
         n_cols = 2
         n_rows = (len(selected_features_overview) + 1) // n_cols
 
-        fig, axes = plt.subplots(n_rows, n_cols, figsize=(20, n_rows * 6), constrained_layout=True)
+        fig, axes = plt.subplots(n_rows, n_cols, figsize=(18, n_rows * 6), constrained_layout=True)
+
+        # Letter size for the subplots
+        for ax in axes.flatten():
+            for item in ([ax.title, ax.xaxis.label, ax.yaxis.label] +
+                        ax.get_xticklabels() + ax.get_yticklabels()):
+                item.set_fontsize(18)
 
         for i, column in enumerate(featured_df[selected_features_overview].columns):
             ax = axes[i // n_cols, i % n_cols]
@@ -250,6 +256,11 @@ def main(featured_df, target_df):
             ax.spines['top'].set_visible(False)
             ax.spines['right'].set_visible(False)
             ax.set_title(f'Distribution of {description}', fontsize=18, fontweight='bold')
+
+            ax.get_legend().remove()
+
+        # Add legend outside of the subplots
+        fig.legend(['Normal', 'Suspect', 'Pathologic'], loc='upper left', bbox_to_anchor=(0, 1.07), fontsize=18, title='NSP Label', title_fontsize='18')
 
 
         # Hide any unused subplots
