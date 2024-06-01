@@ -179,11 +179,15 @@ def main(featured_df, target_df):
         'Tendency': 'Source: [Journal of Advanced Analytics in Healthcare Management](https://research.tensorgate.org/index.php/JAAHM/article/view/38/44)',
     }
 
-    st.markdown('#### Detailed Descriptions of Selected Features')
-    for feature in selected_features_desc:
-        description = feature_descriptions.get(feature, 'No description available.')
-        source = sources.get(feature, 'No source available.')
-        st.markdown(f"**{feature}**: {description}\n{source}")
+    if not selected_features_desc:
+        st.markdown('Please select features to see their descriptions.')
+    else:        
+        st.markdown('#### Detailed Descriptions of Selected Features')
+
+        for feature in selected_features_desc:
+            description = feature_descriptions.get(feature, 'No description available.')
+            source = sources.get(feature, 'No source available.')
+            st.markdown(f"**{feature}**: {description}\n{source}")
 
     # Make divider line
     st.write('---')
