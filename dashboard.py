@@ -260,7 +260,7 @@ def main(featured_df, target_df):
             ax.get_legend().remove()
 
         # Add legend outside of the subplots
-        fig.legend(['Normal', 'Suspect', 'Pathologic'], loc='upper left', bbox_to_anchor=(0, 1.07), fontsize=18, title='NSP Label', title_fontsize='18')
+        fig.legend(['Pathologic', 'Normal', 'Suspect'], loc='upper left', bbox_to_anchor=(0, 1.1), fontsize=18, title='NSP Label', title_fontsize='18')
 
 
         # Hide any unused subplots
