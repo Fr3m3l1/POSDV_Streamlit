@@ -147,8 +147,8 @@ def main(featured_df, target_df):
         col1_7, col2_7, col3_7 = st.columns(3)
 
         user_input['Median'] = col1_7.number_input('histogram median', 60, 200, example_data["Median"].values[0], 1, placeholder="Median")
-        user_input['Variance'] = col2_7.number_input('histogram variance', 0, 100, example_data["Variance"].values[0], 1, placeholder="Variance")
-        user_input['Tendency'] = col3_7.number_input('histogram tendency', -1, 1, example_data["Tendency"].values[0], 1, placeholder="Tendency")
+        user_input['Variance'] = col2_7.number_input('histogram variance', 0, 350, example_data["Variance"].values[0], 1, placeholder="Variance")
+        user_input['Tendency'] = col3_7.number_input('histogram tendency', -1.5, 1.5, example_data["Tendency"].values[0], 1, placeholder="Tendency")
 
         submitted = st.form_submit_button('Calculate')
 
