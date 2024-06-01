@@ -26,11 +26,21 @@ def train_model(featured_df, target_df):
     X = featured_df
     y = target_df['NSP_Label']
 
+    # Map string labels to numeric labels
+    label_mapping = {'Normal': 0, 'Suspect': 1, 'Pathologic': 2}
+    y = y.map(label_mapping)
+
+    # Ensure target values match the expected classes
+    unique_classes = y.unique()
+    if not all(cls in [0, 1, 2] for cls in unique_classes):
+        st.error(f"Unexpected class labels found: {unique_classes}")
+        return None, [], None, None
+
     # Split data into training and testing sets
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
 
-    # Initialize the Random Forest Classifier
-    clf = RandomForestClassifier(n_estimators=100, random_state=42)
+    # Initialize the Random Forest Classifier with class weights
+    clf = RandomForestClassifier(n_estimators=100, random_state=42, class_weight='balanced')
 
     # Train the model
     clf.fit(X_train, y_train)
@@ -38,13 +48,7 @@ def train_model(featured_df, target_df):
     # Make predictions
     y_pred = clf.predict(X_test)
 
-    # Evaluate the model
-    accuracy = accuracy_score(y_test, y_pred)
-    st.write(f"Model Accuracy: {accuracy}")
-    st.write("Classification Report:")
-    st.text(classification_report(y_test, y_pred))
-
-    return clf, X.columns.tolist()
+    return clf, X.columns.tolist(), y_test, y_pred
 
 def main():
     st.title('Cardiotocography Dashboard')
@@ -53,10 +57,10 @@ def main():
     featured_df, target_df = helpers.loaddata()
 
     # Train the model
-    clf, feature_columns = train_model(featured_df, target_df)
+    clf, feature_columns, y_test, y_pred = train_model(featured_df, target_df)
 
-    # Class names based on the dataset's target variable
-    class_names = ["Normal", "Suspect", "Pathologic"]
+    if clf is None:
+        return
 
     # Show intro text
     st.markdown('This dashboard provides an overview of a [Cardiotocography dataset](https://archive.ics.uci.edu/dataset/193/cardiotocography). The dataset contains features of fetal heart rate (FHR) and uterine contractions (UC) and the target variable Normal, Suspect, Pathologic (NSP). Feel free to explore the dataset by selecting a categorical variable from the dropdown menu below.')
@@ -104,9 +108,27 @@ def main():
         # Ensure the input DataFrame has the same column order as the training DataFrame
         input_data_df = input_data_df[feature_columns]
 
+        # Mapping of numeric labels to class names
+        class_names = {0: 'Normal', 1: 'Suspect', 2: 'Pathologic'}
+
         if st.button('Predict'):
             prediction = clf.predict(input_data_df)
-            st.write(f'Predicted Class: {prediction[0]}')
+            prediction_proba = clf.predict_proba(input_data_df)
+
+            if prediction[0] in class_names:
+                predicted_class_name = class_names[prediction[0]]
+                st.write(f'Predicted Class: {predicted_class_name}')
+                st.write(f'Probability of Normal class: {prediction_proba[0][0]}')
+                st.write(f'Probability of Suspect class: {prediction_proba[0][1]}')
+                st.write(f'Probability of Pathologic class: {prediction_proba[0][2]}')
+            else:
+                st.error(f"Unexpected prediction value: {prediction[0]}")
+
+            # Add a toggle list to show the evaluation of the model
+            with st.expander("Learn more about the prediction model"):
+                st.write(f"Model Accuracy: {accuracy_score(y_test, y_pred)}")
+                st.write("Classification Report:")
+                st.text(classification_report(y_test, y_pred))
 
 if __name__ == '__main__':
     main()
