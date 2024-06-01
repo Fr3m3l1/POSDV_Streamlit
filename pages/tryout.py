@@ -1,7 +1,12 @@
+import pandas as pd
 import streamlit as st
 import plotly.express as px
 
 import functions.helpers as helpers
+
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.model_selection import train_test_split
+from sklearn.metrics import accuracy_score
 
 
 st.set_page_config(initial_sidebar_state="collapsed", page_title="CTG Tryout", page_icon=":heart:", layout="centered")
@@ -18,6 +23,30 @@ st.markdown(
 )
 
 st.markdown("<div id='linkto_top'></div>", unsafe_allow_html=True) 
+
+def train_model(featured_df, target_df):
+    # Prepare the data for model building
+    X = featured_df
+    y = target_df['NSP_Label']
+
+    # Split data into training and testing sets
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+
+    # Initialize the Random Forest Classifier
+    clf = RandomForestClassifier(n_estimators=100, random_state=42)
+
+    # Train the model
+    clf.fit(X_train, y_train)
+
+    # Make predictions
+    y_pred = clf.predict(X_test)
+
+    # Evaluate the model
+    accuracy = accuracy_score(y_test, y_pred)
+    print(f"Model Accuracy: {accuracy}")
+
+    return clf, X.columns.tolist()
+
 
 def main(featured_df, target_df):
 
@@ -138,6 +167,21 @@ def main(featured_df, target_df):
         print(sample_data, target)
         # do calculation with the model
         print("Calculating with the model")
+        # train the model
+        clf, feature_columns = train_model(featured_df, target_df)
+
+        # make a prediction with the user input data
+        input_data_df = pd.DataFrame([user_input])
+        for col in feature_columns:
+            if col not in input_data_df.columns:
+                input_data_df[col] = featured_df[col].mean()
+            
+        input_data_df = input_data_df[feature_columns]
+
+        # make a prediction
+        prediction = clf.predict(input_data_df)
+        target = prediction[0]
+        print(f"Prediction with model: {target}")
 
     # Show the result of the calculation
     st.markdown('### Result')
