@@ -293,10 +293,6 @@ def main(featured_df, target_df):
             ax.spines['right'].set_visible(False)
             ax.set_title(f'Distribution of {description}', fontsize=18, fontweight='bold')
 
-            ax.get_legend().remove()
-
-        ax.legend(['Pathologic', 'Normal', 'Suspect'], loc='upper left', bbox_to_anchor=(0, 1.1), fontsize=18, title='NSP Label', title_fontsize='18')
-
         st.pyplot(fig)
 
 
