@@ -29,7 +29,7 @@ def main(featured_df, target_df):
     # Show intro text
     st.markdown('This dashboard provides an overview of a [Cardiotocography dataset](https://archive.ics.uci.edu/dataset/193/cardiotocography). The dataset contains features of fetal heart rate (FHR) and uterine contractions (UC) and the target variable Normal, Suspect, Pathologic (NSP). Feel free to explore the dataset by selecting a categorical variable from the dropdown menu below.')
 
-    st.markdown('### Cardiotocography dataset overview:')
+    st.markdown('### Cardiotocography dataset overview')
     # Number of features
     # Number of samples
     # Number of missing values
@@ -71,7 +71,7 @@ def main(featured_df, target_df):
                              'Tendency: histogram tendency']
         
     # Introduction and explanation of PCA
-    st.markdown('### PCA - Explained Variance per Measurement:')
+    st.markdown('### PCA - Explained Variance per Measurement')
     st.markdown('Principal Component Analysis (PCA) is a mathematical reduction technique that allows to illuminate the most important measurements in the big datasets. The graph below shows the explained variance for each measurement of a patient. The higher the explained variance, the more important that measurement could be for further treatment.')
 
     # Perform PCA
@@ -112,7 +112,7 @@ def main(featured_df, target_df):
     st.write('---')
 
     # Description of all features
-    st.markdown('### Description of all features:')
+    st.markdown('### Description of all features')
 
     all_features = featured_df.select_dtypes(include=[np.number]).columns.tolist()
     col1_desc, col2_desc = st.columns(2)
@@ -157,24 +157,24 @@ def main(featured_df, target_df):
     sources = {
         'LB': 'Source: [Bioengineering Journal](https://www.mdpi.com/2306-5354/11/4/368#B30-bioengineering-11-00368)',
         'AC': 'Source: [Frontiers in Bioengineering](https://www.frontiersin.org/articles/10.3389/fbioe.2022.887549/full)',
-        'FM': 'Source: [Example no source jet](https://www.example.com)',
+        #'FM': 'Source: [Example no source jet](https://www.example.com)',
         'UC': 'Source: [Bioengineering Journal](https://www.mdpi.com/2306-5354/11/4/368#B30-bioengineering-11-00368)',
         'ASTV': 'Source: [Frontiers in Bioengineering](https://www.frontiersin.org/articles/10.3389/fbioe.2022.887549/full)',
-        'MSTV': 'Source: [Example no source jet](https://www.example.com)',
+        #'MSTV': 'Source: [Example no source jet](https://www.example.com)',
         'ALTV': 'Source: [Bioengineering Journal](https://www.mdpi.com/2306-5354/11/4/368#B30-bioengineering-11-00368)',
         'MLTV': 'Source: [Frontiers in Bioengineering](https://www.frontiersin.org/articles/10.3389/fbioe.2022.887549/full)',
-        'DL': 'Source: [Example no source jet](https://www.example.com)',
+        #'DL': 'Source: [Example no source jet](https://www.example.com)',
         'DS': 'Source: [Bioengineering Journal](https://www.mdpi.com/2306-5354/11/4/368#B30-bioengineering-11-00368)',
         'DP': 'Source: [Frontiers in Bioengineering](https://www.frontiersin.org/articles/10.3389/fbioe.2022.887549/full)',
-        'DR': 'Source: [Example no source jet](https://www.example.com)',
+        #'DR': 'Source: [Example no source jet](https://www.example.com)',
         'Width' : 'Source: [Journal of Advanced Analytics in Healthcare Management](https://research.tensorgate.org/index.php/JAAHM/article/view/38/44)',
         'Min': 'Source: [Journal of Advanced Analytics in Healthcare Management](https://research.tensorgate.org/index.php/JAAHM/article/view/38/44)',
         'Max': 'Source: [Journal of Advanced Analytics in Healthcare Management](https://research.tensorgate.org/index.php/JAAHM/article/view/38/44)',
         'NMax': 'Source: [Research Article](https://www.researchgate.net/publication/357179891_Investigating_the_interpretability_of_fetal_status_assessment_using_antepartum_cardiotocographic_records)',
         'Nzeros': 'Source: [Research Article](https://www.researchgate.net/publication/357179891_Investigating_the_interpretability_of_fetal_status_assessment_using_antepartum_cardiotocographic_records )',
         'Mode': 'Source: [Journal of Advanced Analytics in Healthcare Management](https://research.tensorgate.org/index.php/JAAHM/article/view/38/44)',
-        'Mean': 'Source: [Example no source jet](https://www.example.com)',
-        'Median': 'Source: [Example no source jet](https://www.example.com)',
+        #'Mean': 'Source: [Example no source jet](https://www.example.com)',
+        #'Median': 'Source: [Example no source jet](https://www.example.com)',
         'Variance': 'Source: [Journal of Advanced Analytics in Healthcare Management](https://research.tensorgate.org/index.php/JAAHM/article/view/38/44)',
         'Tendency': 'Source: [Journal of Advanced Analytics in Healthcare Management](https://research.tensorgate.org/index.php/JAAHM/article/view/38/44)',
     }
@@ -184,6 +184,13 @@ def main(featured_df, target_df):
     else:        
         st.markdown('#### Detailed Descriptions of Selected Features')
 
+        st.markdown("""**💡 How to use this feature description?**
+        This section provides detailed descriptions of the selected features in the dataset.
+        The descriptions include information about the measurement, its significance, and potential sources for further reading.
+        Use this information to understand the context of the measurements and their importance in the dataset.""")
+
+        st.markdown('')
+
         for feature in selected_features_desc:
             description = feature_descriptions.get(feature, 'No description available.')
             source = sources.get(feature, 'No source available.')
@@ -192,7 +199,7 @@ def main(featured_df, target_df):
     # Make divider line
     st.write('---')
 
-    st.markdown('### Overview of all measurements distribution:')
+    st.markdown('### Overview of all measurements distribution')
 
     all_features = featured_df.select_dtypes(include=[np.number]).columns.tolist()
 
@@ -231,6 +238,10 @@ def main(featured_df, target_df):
         #'Variance': [0, 100],
         #'Tendency': [-1, 1]
     }
+
+    st.markdown("""**💡 How to use this overview?**""")
+    st.markdown("""This overview displays the distribution of selected measurements in the dataset and should give you an idea of the range and spread of the data.
+                In some cases, normal reference values are indicated by intermittent red lines. These values can help you interpret the data in the context of typical measurements.""")
     
 
     if len(selected_features_overview) > 1:
@@ -258,7 +269,7 @@ def main(featured_df, target_df):
             # Add intermittent red lines
             if column in red_lines:
                 for line in red_lines[column]:
-                    ax.axvline(line, color='red', linestyle='--', linewidth=1)
+                    ax.axvline(line, color='red', linestyle='--', linewidth=1, label='Normal reference value')
             
             ax.spines['top'].set_visible(False)
             ax.spines['right'].set_visible(False)
@@ -270,7 +281,7 @@ def main(featured_df, target_df):
         if n_rows == 1:
             fig.legend(['Pathologic', 'Normal', 'Suspect'], loc='upper left', bbox_to_anchor=(0, 1.3), fontsize=18, title='NSP Label', title_fontsize='18')
         else:
-            fig.legend(['Pathologic', 'Normal', 'Suspect'], loc='upper left', bbox_to_anchor=(0, 1.15 - (len(selected_features_overview)/2) *0.011), fontsize=18, title='NSP Label', title_fontsize='18')
+            fig.legend(['Pathologic', 'Normal', 'Suspect'], loc='upper left', bbox_to_anchor=(0, 1.16 - (len(selected_features_overview)/2) *0.011), fontsize=18, title='NSP Label', title_fontsize='18')
 
 
         # Hide any unused subplots
@@ -307,7 +318,7 @@ def main(featured_df, target_df):
     if show_correlation == 'Yes':
 
         st.write('---')
-        st.markdown('### Correlation Heatmap:')
+        st.markdown('### Correlation Heatmap')
 
         col1_corr, col2_corr = st.columns(2)
 
@@ -323,13 +334,7 @@ def main(featured_df, target_df):
 
         # Correlation heatmap
         if len(selected_features_corr) > 1:
-            st.markdown('#### Correlation Heatmap of Selected Measurements:')
-            corr_matrix = featured_df[selected_features_corr].corr()
-            corr_matrix = corr_matrix.round(2)
-            heatmap_fig = px.imshow(corr_matrix, text_auto=True, labels=dict(x="Feature", y="Feature", color="Correlation"), aspect="auto", color_continuous_scale='RdBu_r', zmin=-1, zmax=1)
-            st.plotly_chart(heatmap_fig, use_container_width=True)
-            
-
+            st.markdown('#### Correlation Heatmap of Selected Measurements')
             st.markdown("""
             **💡 How to use this correlation matrix?**  
             This correlationheatmap displays the relationships between various measurements in a patient's CTG data. 
@@ -337,6 +342,13 @@ def main(featured_df, target_df):
             Look for strong positive or negative correlations, as they may indicate significant information. 
             1 means positive correlation, -1 represents negative correlation, 0 indicates no correlation.
                 """)
+            corr_matrix = featured_df[selected_features_corr].corr()
+            corr_matrix = corr_matrix.round(2)
+            heatmap_fig = px.imshow(corr_matrix, text_auto=True, labels=dict(x="Feature", y="Feature", color="Correlation"), aspect="auto", color_continuous_scale='RdBu_r', zmin=-1, zmax=1)
+            st.plotly_chart(heatmap_fig, use_container_width=True)
+            
+
+
 
         
     # show button to localhost:8501/tryout

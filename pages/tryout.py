@@ -82,6 +82,8 @@ def main(featured_df, target_df):
         sample_data = True
         target = "Pathologic"
 
+    col1_button2, col2_button2, col3_button2 = st.columns(3, gap="small")
+
     if not sample_data:
 
         print("No sample data selected")
@@ -94,7 +96,7 @@ def main(featured_df, target_df):
         sample_data = False
         target = None
 
-    normalize = st.checkbox('Normalize Data', False)
+    normalize = col1_button2.checkbox('Normalize Data', False)
 
     if normalize:
         change_yScale = True
@@ -148,7 +150,7 @@ def main(featured_df, target_df):
 
         user_input['Median'] = col1_7.number_input('histogram median', 60, 200, example_data["Median"].values[0], 1, placeholder="Median")
         user_input['Variance'] = col2_7.number_input('histogram variance', 0, 350, example_data["Variance"].values[0], 1, placeholder="Variance")
-        user_input['Tendency'] = col3_7.number_input('histogram tendency', -1.5, 1.5, example_data["Tendency"].values[0], 1, placeholder="Tendency")
+        user_input['Tendency'] = col3_7.number_input('histogram tendency', -2, 2, example_data["Tendency"].values[0], 1, placeholder="Tendency")
 
         submitted = st.form_submit_button('Calculate')
 
