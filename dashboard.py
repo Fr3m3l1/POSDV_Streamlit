@@ -243,7 +243,10 @@ def main(featured_df, target_df):
                 item.set_fontsize(18)
 
         for i, column in enumerate(featured_df[selected_features_overview].columns):
-            ax = axes[i // n_cols, i % n_cols]
+            if n_rows == 1:
+                ax = axes[i % n_cols]
+            else:
+                ax = axes[i // n_cols, i % n_cols]
             description = next((desc for desc in categorical_variables if desc.startswith(column)), column)
             sns.kdeplot(data=featured_df, x=column, hue=target_df['NSP_Label'], fill=True,
                         palette={'Normal': 'green', 'Suspect': 'blue', 'Pathologic': 'red'}, ax=ax)
@@ -260,7 +263,10 @@ def main(featured_df, target_df):
             ax.get_legend().remove()
 
         # Add legend outside of the subplots
-        fig.legend(['Pathologic', 'Normal', 'Suspect'], loc='upper left', bbox_to_anchor=(0, 1.1), fontsize=18, title='NSP Label', title_fontsize='18')
+        if n_rows == 1:
+            fig.legend(['Pathologic', 'Normal', 'Suspect'], loc='upper left', bbox_to_anchor=(0, 1.3), fontsize=18, title='NSP Label', title_fontsize='18')
+        else:
+            fig.legend(['Pathologic', 'Normal', 'Suspect'], loc='upper left', bbox_to_anchor=(0, 1.15 - (len(selected_features_overview)/2) *0.011), fontsize=18, title='NSP Label', title_fontsize='18')
 
 
         # Hide any unused subplots
@@ -269,7 +275,29 @@ def main(featured_df, target_df):
 
         st.pyplot(fig)
 
+    else:
+        # Density plot for selected features
+        fig, ax = plt.subplots(figsize=(12, 6))
 
+        for column in selected_features_overview:
+            description = next((desc for desc in categorical_variables if desc.startswith(column)), column)
+            sns.kdeplot(data=featured_df, x=column, hue=target_df['NSP_Label'], fill=True,
+                        palette={'Normal': 'green', 'Suspect': 'blue', 'Pathologic': 'red'}, ax=ax)
+
+            # Add intermittent red lines
+            if column in red_lines:
+                for line in red_lines[column]:
+                    ax.axvline(line, color='red', linestyle='--', linewidth=1)
+
+            ax.spines['top'].set_visible(False)
+            ax.spines['right'].set_visible(False)
+            ax.set_title(f'Distribution of {description}', fontsize=18, fontweight='bold')
+
+            ax.get_legend().remove()
+
+        ax.legend(['Pathologic', 'Normal', 'Suspect'], loc='upper left', bbox_to_anchor=(0, 1.1), fontsize=18, title='NSP Label', title_fontsize='18')
+
+        st.pyplot(fig)
 
 
     #### Heatmap
