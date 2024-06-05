@@ -51,10 +51,16 @@ def load_session_data(variable):
     """
     Load the session data from the csv file.
     """
-    
-    with open('data/session_data.json', 'r') as session_file:
-        session_data_list = json.load(session_file)
-        value = session_data_list.get(variable, None)
+
+    try:    
+        with open('data/session_data.json', 'r') as session_file:
+            session_data_list = json.load(session_file)
+            value = session_data_list.get(variable, None)
+    except:
+        # create the file if it does not exist
+        with open('data/session_data.json', 'w') as session_file:
+            session_data_list = {}
+            value = None
 
 
     return value
