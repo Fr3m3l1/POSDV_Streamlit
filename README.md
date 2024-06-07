@@ -33,4 +33,4 @@ The aim of this project is to create a data visualization dashboard that effecti
    ```
 
 ### Demo
-![Demo](https://cardiotocography-dashboard.streamlit.app/)
+[Link to Dashbaord](https://cardiotocography-dashboard.streamlit.app/)
