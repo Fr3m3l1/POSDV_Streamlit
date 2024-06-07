@@ -31,3 +31,6 @@ The aim of this project is to create a data visualization dashboard that effecti
    ```sh
    streamlit run dashboard.py
    ```
+
+### Demo
+![Demo](https://cardiotocography-dashboard.streamlit.app/)
