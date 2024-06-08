@@ -73,9 +73,9 @@ def main(featured_df, target_df):
                              'DL: # of light decelerations per second',
                              'DS: # of severe decelerations per second',
                              'DP: # of prolongued decelerations per second',
-                             'ASTV: % of time with abnormal short term variability',
+                             'ASTV: % time with abnormal short-term variability',
                              'MSTV: mean value of short term variability',
-                             'ALTV: % of time with abnormal long term variability',
+                             'ALTV: % time with abnormal long-term variability',
                              'MLTV: mean value of long term variability',
                              'Width: width of FHR histogram',
                              'Min: minimum of FHR histogram',
@@ -268,7 +268,7 @@ def main(featured_df, target_df):
             'Normal': Rectangle((0, 0), 2, 1, color=desaturate_color('green', 0.5)),
             'Suspect': Rectangle((0, 0), 2, 1, color=desaturate_color('blue', 0.5)),
             'Pathologic': Rectangle((0, 0), 2, 1, color=desaturate_color('red', 0.5)),
-            'Normal reference value': Rectangle((0, 0), 2, 1, edgecolor=desaturate_color('red', 0.5), facecolor='none', linestyle='--', linewidth=2)
+            'Normal reference value': plt.Line2D([0], [0], color='red', linestyle='--', linewidth=1)
         }
 
         for i, column in enumerate(featured_df[selected_features_overview].columns):
@@ -325,6 +325,23 @@ def main(featured_df, target_df):
             ax.spines['top'].set_visible(False)
             ax.spines['right'].set_visible(False)
             ax.set_title(f'Distribution of {description}', fontsize=18, fontweight='bold')
+
+            # add line for normal reference values to the legend
+            handles_dict = {
+                'Normal': Rectangle((0, 0), 2, 1, color=desaturate_color('green', 0.5)),
+                'Suspect': Rectangle((0, 0), 2, 1, color=desaturate_color('blue', 0.5)),
+                'Pathologic': Rectangle((0, 0), 2, 1, color=desaturate_color('red', 0.5)),
+                'Normal reference value': plt.Line2D([0], [0], color='red', linestyle='--', linewidth=1)
+            }
+
+            # Prepare the ordered handles and labels for the legend
+            labels_order = ['Normal', 'Suspect', 'Pathologic', 'Normal reference value']
+            handles = [handles_dict[label] for label in labels_order]
+
+            ax.get_legend().remove()
+
+            # Add legend inside the plot
+            fig.legend(handles=handles, labels=labels_order, loc='upper right', bbox_to_anchor=(0.9, 0.8), fontsize=11, title='NSP Label', title_fontsize='13')
 
         st.pyplot(fig)
 
