@@ -279,9 +279,9 @@ def main(featured_df, target_df):
 
         # Add legend outside of the subplots
         if n_rows == 1:
-            fig.legend(['Pathologic', 'Normal', 'Suspect'], loc='upper left', bbox_to_anchor=(0, 1.3), fontsize=18, title='NSP Label', title_fontsize='18')
+            fig.legend(['Pathologic', 'Normal', 'Suspect','Normal reference value'], loc='upper left', bbox_to_anchor=(0, 1.3), fontsize=18, title='NSP Label', title_fontsize='18')
         else:
-            fig.legend(['Pathologic', 'Normal', 'Suspect'], loc='upper left', bbox_to_anchor=(0, 1.16 - (len(selected_features_overview)/2) *0.011), fontsize=18, title='NSP Label', title_fontsize='18')
+            fig.legend(['Pathologic', 'Normal', 'Suspect','Normal reference value'], loc='upper left', bbox_to_anchor=(0, 1.16 - (len(selected_features_overview)/2) *0.011), fontsize=18, title='NSP Label', title_fontsize='18')
 
 
         # Hide any unused subplots
