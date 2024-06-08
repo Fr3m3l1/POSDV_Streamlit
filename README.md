@@ -3,22 +3,26 @@
 <!-- README.md -->
 
 <!-- PROJECT TITLE -->
+
 # Cardiography Dashboard
 
 ## Authors
-* [Noirin Graham](https://github.com/grahanoi) 
-* [Michael Scheidegger](https://github.com/Fr3m3l1) 
-* [Mariia Gurova](https://github.ch/gurovmar) 
-* [Pia Lagler   ](https://github.com/Lagpi) 
+
+- [Noirin Graham](https://github.com/grahanoi)
+- [Michael Scheidegger](https://github.com/Fr3m3l1)
+- [Mariia Gurova](https://github.ch/gurovmar)
+- [Pia Lagler ](https://github.com/Lagpi)
 
 ## About the Project
+
 The aim of this project is to create a data visualization dashboard that effectively presents the cardiotocography dataset from UCI for medical students. With the help of this dashboard they should be able to be more certain in their decisioin for patient monitoring and treatment.
 
 ## Built With
-* Python
 
+- Python
 
 ## Installation Instructions
+
 1. Clone the repository:
    ```sh
    git clone https://github.com/Fr3m3l1/POSDV_Streamlit
@@ -33,4 +37,9 @@ The aim of this project is to create a data visualization dashboard that effecti
    ```
 
 ### Demo
+
 [Link to Dashbaord](https://cardiotocography-dashboard.streamlit.app/)
+
+### Data Source
+
+https://archive.ics.uci.edu/dataset/193/cardiotocography

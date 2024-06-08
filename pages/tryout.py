@@ -1,9 +1,8 @@
+# Import necessary libraries
 import pandas as pd
 import streamlit as st
 import plotly.express as px
-
 import functions.helpers as helpers
-
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import accuracy_score

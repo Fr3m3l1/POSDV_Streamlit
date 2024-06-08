@@ -1,10 +1,10 @@
+# Import necessary libraries
 import streamlit as st
 import numpy as np
 import matplotlib.pyplot as plt
 import plotly.express as px
 from sklearn.decomposition import PCA
 import seaborn as sns
-
 import functions.helpers as helpers
 
 # Set the page configuration
@@ -157,24 +157,24 @@ def main(featured_df, target_df):
     sources = {
         'LB': 'Source: [Bioengineering Journal](https://www.mdpi.com/2306-5354/11/4/368#B30-bioengineering-11-00368)',
         'AC': 'Source: [Frontiers in Bioengineering](https://www.frontiersin.org/articles/10.3389/fbioe.2022.887549/full)',
-        #'FM': 'Source: [Example no source jet](https://www.example.com)',
+        'FM': 'Source: [Springer Books](https://link.springer.com/chapter/10.1007/978-3-030-54403-4_4)',
         'UC': 'Source: [Bioengineering Journal](https://www.mdpi.com/2306-5354/11/4/368#B30-bioengineering-11-00368)',
         'ASTV': 'Source: [Frontiers in Bioengineering](https://www.frontiersin.org/articles/10.3389/fbioe.2022.887549/full)',
-        #'MSTV': 'Source: [Example no source jet](https://www.example.com)',
+        'MSTV': 'Source: [Springer Books](https://link.springer.com/chapter/10.1007/978-3-030-54403-4_4)',
         'ALTV': 'Source: [Bioengineering Journal](https://www.mdpi.com/2306-5354/11/4/368#B30-bioengineering-11-00368)',
         'MLTV': 'Source: [Frontiers in Bioengineering](https://www.frontiersin.org/articles/10.3389/fbioe.2022.887549/full)',
-        #'DL': 'Source: [Example no source jet](https://www.example.com)',
+        'DL': 'Source: [Springer Books](https://link.springer.com/chapter/10.1007/978-3-030-54403-4_4)',
         'DS': 'Source: [Bioengineering Journal](https://www.mdpi.com/2306-5354/11/4/368#B30-bioengineering-11-00368)',
         'DP': 'Source: [Frontiers in Bioengineering](https://www.frontiersin.org/articles/10.3389/fbioe.2022.887549/full)',
-        #'DR': 'Source: [Example no source jet](https://www.example.com)',
+        'DR': 'Source: [Springer Books](https://link.springer.com/chapter/10.1007/978-3-030-54403-4_4)',
         'Width' : 'Source: [Journal of Advanced Analytics in Healthcare Management](https://research.tensorgate.org/index.php/JAAHM/article/view/38/44)',
         'Min': 'Source: [Journal of Advanced Analytics in Healthcare Management](https://research.tensorgate.org/index.php/JAAHM/article/view/38/44)',
         'Max': 'Source: [Journal of Advanced Analytics in Healthcare Management](https://research.tensorgate.org/index.php/JAAHM/article/view/38/44)',
         'NMax': 'Source: [Research Article](https://www.researchgate.net/publication/357179891_Investigating_the_interpretability_of_fetal_status_assessment_using_antepartum_cardiotocographic_records)',
         'Nzeros': 'Source: [Research Article](https://www.researchgate.net/publication/357179891_Investigating_the_interpretability_of_fetal_status_assessment_using_antepartum_cardiotocographic_records )',
         'Mode': 'Source: [Journal of Advanced Analytics in Healthcare Management](https://research.tensorgate.org/index.php/JAAHM/article/view/38/44)',
-        #'Mean': 'Source: [Example no source jet](https://www.example.com)',
-        #'Median': 'Source: [Example no source jet](https://www.example.com)',
+        'Mean': 'Source: [Springer Books](https://link.springer.com/chapter/10.1007/978-3-030-54403-4_4)',
+        'Median': 'Source: [Springer Books](https://link.springer.com/chapter/10.1007/978-3-030-54403-4_4)',
         'Variance': 'Source: [Journal of Advanced Analytics in Healthcare Management](https://research.tensorgate.org/index.php/JAAHM/article/view/38/44)',
         'Tendency': 'Source: [Journal of Advanced Analytics in Healthcare Management](https://research.tensorgate.org/index.php/JAAHM/article/view/38/44)',
     }
@@ -190,7 +190,7 @@ def main(featured_df, target_df):
         Use this information to understand the context of the measurements and their importance in the dataset.""")
 
         st.markdown('')
-
+        # Display the descriptions of the selected features
         for feature in selected_features_desc:
             description = feature_descriptions.get(feature, 'No description available.')
             source = sources.get(feature, 'No source available.')
@@ -218,25 +218,14 @@ def main(featured_df, target_df):
     red_lines = {
         'LB': [110, 150],
         'AC': [0, 0.013],
-        #'FM': [0.00139, 0.00417],
         'UC': [0, 0.0083],
         'DL': [0.00167, 0],
-        #'DS': [0.00111, 0],
-        #'DP': [0, 0.00056],
         'ASTV': [20, 58],
         'MSTV': [0.5, 2.5],
         'ALTV': [0, 13],
         'MLTV': [4, 17],
         'Width': [25, 140],
-        #'Min': [50, 100],
-        #'Max': [100, 200],
-        #'Nmax': [0, 10],
-        #'Nzeros': [0, 10],
-        #'Mode': [100, 150],
-        #'Mean': [100, 150],
-        #'Median': [100, 150],
-        #'Variance': [0, 100],
-        #'Tendency': [-1, 1]
+
     }
 
     st.markdown("""**💡 How to use this overview?**""")
