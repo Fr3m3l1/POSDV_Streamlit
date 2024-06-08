@@ -2,6 +2,8 @@
 import streamlit as st
 import numpy as np
 import matplotlib.pyplot as plt
+from matplotlib.patches import Rectangle
+import matplotlib.colors as mcolors
 import plotly.express as px
 from sklearn.decomposition import PCA
 import seaborn as sns
@@ -21,6 +23,22 @@ st.markdown(
     """,
     unsafe_allow_html=True,
 )
+
+def desaturate_color(color, amount=0.5):
+    """
+    Desaturate a given color by blending it with white.
+    
+    Parameters:
+    color: str or tuple - Original color in any format recognized by matplotlib.
+    amount: float - Amount to desaturate (0.0 is no change, 1.0 is white).
+    
+    Returns:
+    tuple - Desaturated color as an RGB tuple.
+    """
+    rgb = mcolors.to_rgb(color)
+    white = np.array([1, 1, 1])
+    desaturated_rgb = (1 - amount) * np.array(rgb) + amount * white
+    return tuple(desaturated_rgb)
 
 def main(featured_df, target_df):
 
@@ -246,6 +264,13 @@ def main(featured_df, target_df):
                         ax.get_xticklabels() + ax.get_yticklabels()):
                 item.set_fontsize(18)
 
+        handles_dict = {
+            'Normal': Rectangle((0, 0), 2, 1, color=desaturate_color('green', 0.5)),
+            'Suspect': Rectangle((0, 0), 2, 1, color=desaturate_color('blue', 0.5)),
+            'Pathologic': Rectangle((0, 0), 2, 1, color=desaturate_color('red', 0.5)),
+            'Normal reference value': Rectangle((0, 0), 2, 1, edgecolor=desaturate_color('red', 0.5), facecolor='none', linestyle='--', linewidth=2)
+        }
+
         for i, column in enumerate(featured_df[selected_features_overview].columns):
             if n_rows == 1:
                 ax = axes[i % n_cols]
@@ -263,15 +288,19 @@ def main(featured_df, target_df):
             ax.spines['top'].set_visible(False)
             ax.spines['right'].set_visible(False)
             ax.set_title(f'Distribution of {description}', fontsize=18, fontweight='bold')
+            
+            
+            # Prepare the ordered handles and labels for the legend
+            labels_order = ['Normal', 'Suspect', 'Pathologic', 'Normal reference value']
+            handles = [handles_dict[label] for label in labels_order]
 
             ax.get_legend().remove()
 
-        # Add legend outside of the subplots
-        if n_rows == 1:
-            fig.legend(['Pathologic', 'Normal', 'Suspect','Normal reference value'], loc='upper left', bbox_to_anchor=(0, 1.3), fontsize=18, title='NSP Label', title_fontsize='18')
-        else:
-            fig.legend(['Pathologic', 'Normal', 'Suspect','Normal reference value'], loc='upper left', bbox_to_anchor=(0, 1.16 - (len(selected_features_overview)/2) *0.011), fontsize=18, title='NSP Label', title_fontsize='18')
-
+                    # Add legend outside of the subplots
+            if n_rows == 1:
+                fig.legend(handles=handles, labels=labels_order, loc='upper left', bbox_to_anchor=(0, 1.3), fontsize=18, title='NSP Label', title_fontsize='18')
+            else:
+                fig.legend(handles=handles, labels=labels_order, loc='upper left', bbox_to_anchor=(0, 1.16 - (len(selected_features_overview) / 2) * 0.011), fontsize=18, title='NSP Label', title_fontsize='18')
 
         # Hide any unused subplots
         for j in range(i + 1, n_rows * n_cols):
